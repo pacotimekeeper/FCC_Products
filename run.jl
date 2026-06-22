@@ -8,7 +8,6 @@ app = App() do session
         DOM.h2("Site in construction")
     )
 end
-
 # Or serve it on a server
 try
     if Sys.islinux()
