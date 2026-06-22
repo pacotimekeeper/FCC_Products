@@ -4,7 +4,8 @@ using Bonito
 # Create a reactive counter app
 app = App() do session
     return DOM.div(
-	    DOM.h1("Welcome")
+	    DOM.h1("Welcome to FCC Product"),
+        DOM.h2("Site in construction")
     )
 end
 
