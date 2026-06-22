@@ -10,7 +10,13 @@ end
 
 # Or serve it on a server
 try
-    server = Server(app, "0.0.0.0", 8080, proxy_url="http://202.175.118.43:6023")
+    if Sys.islinux()
+        server = Server(app, "0.0.0.0", 8080, proxy_url="http://202.175.118.43:6023")
+    elseif Sys.isapple()
+        server = Server(app, "0.0.0.0", 8080)
+    else
+        error("Unknow host")
+    end
     println("Server is running")
     wait(server)
 catch err
