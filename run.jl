@@ -7,8 +7,8 @@ uoc_chcsj_products = Markdown.parse_file("uoc_products.md")
 
 dom_nav = DOM.ul(
     DOM.li(DOM.a("HOME", href = "/")),
-    DOM.li(DOM.a("S&N", href = "sn")),
-    DOM.li(DOM.a("UOC", href = "uoc")),
+    DOM.li(DOM.a("S&N", href = "/sn")),
+    DOM.li(DOM.a("UOC", href = "/uoc")),
 )
 
 # 1. Styles for the <ul> container
@@ -46,8 +46,8 @@ function (@main)(args)
         if Sys.islinux()
             server = Server(app, "0.0.0.0", 8080, proxy_url="http://202.175.118.43:6023")
             route!(server, "/" => app)
-            route!(server, "sn" => sn)
-            route!(server, "uoc" => uoc)
+            route!(server, "/sn" => sn)
+            route!(server, "/uoc" => uoc)
         elseif Sys.isapple()
             server = Server(app, "0.0.0.0", 8080)
             route!(server, "/" => app)
