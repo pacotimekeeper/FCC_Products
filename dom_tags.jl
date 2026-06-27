@@ -1,0 +1,16 @@
+ul     = DOM.ul
+li     = DOM.li
+div_tag= DOM.div
+span   = DOM.span
+p      = DOM.p
+h1     = DOM.h1
+h2     = DOM.h2
+a      = DOM.a
+img    = DOM.img
+button = DOM.button
+input  = DOM.input
+form   = DOM.form
+table  = DOM.table
+th    = DOM.th
+tr     = DOM.tr
+td     = DOM.td

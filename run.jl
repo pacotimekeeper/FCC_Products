@@ -1,14 +1,17 @@
 using Bonito
 using Markdown
 
+DOM.table
 include("style.jl")
+include("dom_tags.jl")
+
 sn_chcsj_products = Markdown.parse_file("sn_products.md")
 uoc_chcsj_products = Markdown.parse_file("uoc_products.md")
 
-dom_nav = DOM.ul(
-    DOM.li(DOM.a("HOME", href = "/")),
-    DOM.li(DOM.a("S&N", href = "/sn")),
-    DOM.li(DOM.a("UOC", href = "/uoc")),
+dom_nav = ul(
+    li(a("HOME", href = "/")),
+    li(a("S&N", href = "/sn")),
+    li(a("UOC", href = "/uoc")),
 )
 
 # 1. Styles for the <ul> container
@@ -17,8 +20,8 @@ app =  App(title="FCC Products";indicator=ConnectionIndicator()) do session
     DOM.div(
         dom_style,
         dom_nav,
-        DOM.h1("FCC Products"),
-        DOM.h2("Distributed Brands"),
+        h1("FCC Products"),
+        h2("Distributed Brands"),
     )
 end
 
