@@ -1,7 +1,12 @@
 using Bonito
 using Markdown
+using HTTP
+using JSON
 
-DOM.table
+struct MyHandler{T}
+    handler::T
+end
+
 include("style.jl")
 include("dom_tags.jl")
 
@@ -43,6 +48,78 @@ end
 
 # Define a function to serve the app on a server
 
+function Bonito.HTTPServer.apply_handler(handler::MyHandler, context)
+    request = context.request
+    if request.method == "POST"
+        # Read and parse the incoming JSON stream safely
+        body_string = String(request.body)
+        # println(body_string)
+        data = JSON.parse(body_string)
+        
+        # Look at data or trigger a background task here
+        println("Received JSON: ", data)
+        
+        # Send back a JSON response confirmation
+        return HTTP.Response(200,
+            ["Content-Type" => "application/json"], 
+            body=JSON.json(Dict("status" => "success", "message" => "Data received"))
+        )
+    else
+        return HTTP.Response(405, "Method Not Allowed")
+    end
+end
+
+db_app = App() do
+# db_app = App() do session::Session, request::HTTP.Request
+    # if request.method == "POST"
+    #     # Read and parse the incoming JSON stream safely
+    #     body_string = String(request.body)
+    #     # println(body_string)
+    #     data = JSON.parse(body_string)
+        
+    #     # Look at data or trigger a background task here
+    #     println("Received JSON: ", data)
+        
+    #     # Send back a JSON response confirmation
+    #     return HTTP.Response(200,
+    #         ["Content-Type" => "application/json"], 
+    #         body=JSON.json(Dict("status" => "success", "message" => "Data received"))
+    #     )
+    # else
+    #     return HTTP.Response(405, "Method Not Allowed")
+    # end
+
+    # println(request.method)
+    # println(request.body)
+	# path = request.target
+    # return DOM.div("You requested: $path")
+end
+
+function db_handler(context)
+    request = context.request
+    
+    if request.method != "POST"
+        return HTTP.Response(405, "Method Not Allowed")
+    end
+
+    # Parse and process data
+    data = JSON.parse(String(request.body))
+    println("Received JSON: ", data)
+
+    # Return JSON response directly
+    return HTTP.Response(
+        200, 
+        ["Content-Type" => "application/json"], 
+        # body = JSON.json(Dict("status" => "success", "message" => "Data received"))
+        body = JSON.json(Dict(
+            "name" => "Jane Doe",
+            "email" => "jane@example.com",
+            "roles" => ["admin", "user"]
+            )
+        )
+    )
+end
+
 # Main function to orchestrate the app creation and serving
 function (@main)(args)
     try
@@ -56,6 +133,7 @@ function (@main)(args)
             route!(server, "/" => app)
             route!(server, "/sn" => sn)
             route!(server, "/uoc" => uoc)
+            route!(server, "/db" => db_handler)
         else
             error("Unknown host")
         end
