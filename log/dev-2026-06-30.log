@@ -1,0 +1,12 @@
+┌ Info: 2026-06-30 17:02:00 Watching ["/Users/pacomini/Development/FCC_Products"]
+└ @ GenieAutoReload /Users/pacomini/.julia/packages/GenieAutoReload/qpImd/src/GenieAutoReload.jl:19
+┌ Info: 2026-06-30 17:02:01 Autoreloading
+└ @ GenieAutoReload /Users/pacomini/.julia/packages/GenieAutoReload/qpImd/src/GenieAutoReload.jl:22
+┌ Info: 2026-06-30 17:02:22 Web Server starting at http://127.0.0.1:8000 
+└ @ Genie.Server /Users/pacomini/.julia/packages/Genie/AA1CT/src/Server.jl:194
+┌ Info: 2026-06-30 17:02:22 Listening on: 127.0.0.1:8000, thread id: 1
+└ @ HTTP.Servers /Users/pacomini/.julia/packages/HTTP/Y97L1/src/Servers.jl:382
+┌ Info: 2026-06-30 17:06:46 Watching ["/Users/pacomini/Development/FCC_Products"]
+└ @ GenieAutoReload /Users/pacomini/.julia/packages/GenieAutoReload/qpImd/src/GenieAutoReload.jl:19
+┌ Info: 2026-06-30 17:06:47 Autoreloading
+└ @ GenieAutoReload /Users/pacomini/.julia/packages/GenieAutoReload/qpImd/src/GenieAutoReload.jl:22
