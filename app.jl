@@ -1,32 +1,9 @@
-
-
-module App
 #setup of the Genie Framework environment
+module App
 using GenieFramework
-@genietools
 
-# reactive code
-@app begin
-    @in N = 0
-    @out msg = ""
-    @onchange N begin
-        msg = "N = $N"
-    end
+include("SearchItem.jl")
+include("SearchItem2.jl")
 end
 
-# UI components
-function ui()
-    [
-        cell([
-                p("Enter a number")
-                textfield("N", :N )
-            ])
-        cell([
-                bignumber("The value of N is", :N)
-            ])
-    ]
-end
-
-# definition of root route
-@page("/", ui)
-end
+# searchText = "5690G"

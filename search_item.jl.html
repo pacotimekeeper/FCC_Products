@@ -1,0 +1,42 @@
+
+<q-input label="Message" v-model="searchText"></q-input>
+<q-btn label="search" v-on:click="btnSearchText = true"></q-btn>
+
+<q-btn label="Load" v-on:click="trigger = true"></q-btn>
+<q-btn label="Disable" v-on:click="btnOff = true"></q-btn>
+
+<!-- <div>
+    <h2>{{ message }}</h2>
+    
+    <!-- Accessing struct fields via my_user.name -->
+    <!-- <p>Name: <strong>{{ my_user.name }}</strong></p> -->
+
+    <!-- Binding struct properties using Vue directives -->
+    <!-- <q-input v-model="my_user.name" label="Edit Name"></q-input>
+    <q-badge color="primary">Age: {{ my_user.age }}</q-badge>
+
+    <template v-for="my_user in my_users">
+        <strong>{{my_user.name}}</strong>
+    </template>
+ -->
+
+
+<!-- </div> --> -->
+
+
+<div>
+    <table>
+        <tr>
+            <template v-for="thead in theads">
+                <th>{{thead}}</th>
+            </template>
+        </tr>
+        
+        <template v-for="trow in trows">
+            <tr>
+                <td v-for="v in trow">{{v}}</td>
+            </tr>
+        </template>
+        
+        </div>
+    </table>
