@@ -7,7 +7,7 @@
 build/
 target/
 dist/
-
+log/
 # Compiled artifacts
 *.ji
 *.so
