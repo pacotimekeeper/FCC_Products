@@ -1,15 +1,14 @@
 
+<div>
+    <q-input label="Search by (用途/ 物品編號/ Description)" v-model="searchText"></q-input>
+    <q-btn label="SEARCH!" color="primary" v-on:click="btnSearchText = true"></q-btn>
+</div>
 
 <div v-for="supplier in suppliers">
     <q-toggle v-model="selectedSuppliers" :label="supplier" :val="supplier"/>
 </div>
-{{supplierList}}
-{{toggle_states}}
+<hr>
 
-<row>
-    <q-input label="Message" v-model="searchText"></q-input>
-    <q-btn label="Search" v-on:click="btnSearchText = true"></q-btn>
-</row>
 
 <div>
     <table>

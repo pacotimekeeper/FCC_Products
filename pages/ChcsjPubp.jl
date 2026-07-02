@@ -15,13 +15,14 @@ function processDf()
     mapping = load_object("mappings.jld2")
     # mapping = DataFrame(XLSX.readtable("_all_mappings.xlsx"))
     mapping = filter("CHCSJ_PUBP(Y/N)" => x-> !ismissing(x) && x =="Y", mapping)
-    for col in [:CHCSJ_物品編號, :CHCSJ_Product_Description]
+    cols = [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description]
+    for col in cols
         mapping[!, col] .= coalesce.(mapping[!, col], "missing")
+        mapping[!, col] .= string.(mapping[!, col])
     end
-    mapping.CHCSJ_物品編號 .= string.(mapping.CHCSJ_物品編號)
     # dropmissing!(mapping, :CHCSJ_Product_Description)
     unique!(mapping, :CHCSJ_Modelo)
-    select!(mapping, :Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description)
+    select!(mapping, cols)
     sort(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
 end
 
@@ -33,7 +34,10 @@ function filterData(searchText, suppliers)
     tdf = processDf()
     text = lowercase(searchText)
     tdf = filter(:Supplier => in(suppliers), tdf)
-    return tdf[(contains.(tdf.CHCSJ_物品編號, text)) .| (contains.(tdf.CHCSJ_Product_Description, text)), :]
+    return tdf[
+        (contains.(lowercase.(tdf.用途), text)) .| 
+        (contains.(tdf.CHCSJ_物品編號, text)) .| 
+        (contains.(lowercase.(tdf.CHCSJ_Product_Description), text)), :]
     # filter([:col1, :col2] => ((x, y) ->  contains(x, text) || contains(y, text)), tdf)
     # return filter([:CHCSJ_物品編號, :CHCSJ_Product_Description] => ((x, y) ->  contains(lowercase(x), text) || contains(lowercase(y), text)), tdf)
 end
@@ -42,7 +46,7 @@ const df = processDf()
 
 @app begin
     @out suppliers = unique(df.Supplier)
-    @in selectedSuppliers = []
+    @in selectedSuppliers = unique(df.Supplier)
     # @in process = false
     
     # @out sdf = df
