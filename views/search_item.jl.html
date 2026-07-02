@@ -1,9 +1,18 @@
 
-<q-input label="Message" v-model="searchText"></q-input>
-<q-btn label="search" v-on:click="btnSearchText = true"></q-btn>
+<q-input v-model="toggle_name"> </q-input>
+<q-btn v-on:click="process = !process">Add toggle</q-btn>
+<div v-for="toggle in toggle_list">
+        <q-toggle v-model="toggle_states" :label="toggle" :val="toggle"/>
+</div>
+{{toggle_states}}
 
-<q-btn label="Load" v-on:click="trigger = true"></q-btn>
-<q-btn label="Disable" v-on:click="btnOff = true"></q-btn>
+<row>
+    <q-input label="Message" v-model="searchText"></q-input>
+    <q-btn label="Search" v-on:click="btnSearchText = true"></q-btn>
+</row>
+
+<!-- <q-btn label="Load" v-on:click="trigger = true"></q-btn>
+<q-btn label="Disable" v-on:click="btnOff = true"></q-btn> -->
 
 <!-- <div>
     <h2>{{ message }}</h2>
@@ -21,7 +30,7 @@
  -->
 
 
-<!-- </div> --> -->
+<!-- </div> -->
 
 
 <div>
@@ -38,5 +47,5 @@
             </tr>
         </template>
         
-        </div>
     </table>
+</div>

@@ -1,0 +1,29 @@
+
+
+<div v-for="supplier in suppliers">
+    <q-toggle v-model="selectedSuppliers" :label="supplier" :val="supplier"/>
+</div>
+{{supplierList}}
+{{toggle_states}}
+
+<row>
+    <q-input label="Message" v-model="searchText"></q-input>
+    <q-btn label="Search" v-on:click="btnSearchText = true"></q-btn>
+</row>
+
+<div>
+    <table>
+        <tr>
+            <template v-for="thead in theads">
+                <th>{{thead}}</th>
+            </template>
+        </tr>
+        
+        <template v-for="trow in trows">
+            <tr>
+                <td v-for="v in trow">{{v}}</td>
+            </tr>
+        </template>
+        
+    </table>
+</div>
