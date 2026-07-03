@@ -30,10 +30,11 @@ function getData(data)
     return [OrderedDict(pairs(row)) for row in eachrow(data)]
 end
 
-function filterData(searchText, suppliers)
+# function filterData(searchText, suppliers)
+function filterData2(searchText)
     tdf = processDf()
     text = lowercase(searchText)
-    tdf = filter(:Supplier => in(suppliers), tdf)
+    # tdf = filter(:Supplier => in(suppliers), tdf)
     tdf.joinedCol = lowercase.(string.(tdf.CHCSJ_Product_Description, tdf.CHCSJ_物品編號, tdf.用途))
     return tdf[contains.(tdf.joinedCol, text), Not(:joinedCol)]
 end
@@ -47,12 +48,12 @@ const df = processDf()
     @in searchText = ""
     @in btnSearchText = false
     @out theads = names(df)
-    @out trows = getData(DataFrame())
+    @out trows = getData(df)
     
-    @onchange selectedSuppliers begin
-        tdf = filterData(searchText, selectedSuppliers)
-        trows = getData(tdf)
-    end
+    # @onchange selectedSuppliers begin
+    #     tdf = filterData(searchText, selectedSuppliers)
+    #     trows = getData(tdf)
+    # end
 
     @onbutton btnSearchText begin
         tdf = filterData(searchText, selectedSuppliers)
@@ -61,8 +62,8 @@ const df = processDf()
 
 end
 
-# @page("/", "views/chcsj_pubp_items2.jl.html")
-@page("/", "views/chcsj_pubp_items.jl.html")
+@page("/", "views/chcsj_pubp_items2.jl.html")
+# @page("/", "views/chcsj_pubp_items.jl.html")
 # @page("/chcsj_pubp_items", "chcsj_pubp_items.jl.html")
 
 end
