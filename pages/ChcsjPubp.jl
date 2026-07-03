@@ -31,17 +31,17 @@ function getData(data)
 end
 
 # function filterData(searchText, suppliers)
-function filterByText(searchText)
+function filterByText(searchText, suppliers)
     tdf = processDf()
     text = lowercase(searchText)
-    # tdf = filter(:Supplier => in(suppliers), tdf)
+    tdf = filter(:Supplier => in(suppliers), tdf)
     tdf.joinedCol = lowercase.(string.(tdf.CHCSJ_Product_Description, tdf.CHCSJ_物品編號, tdf.用途))
     return tdf[contains.(tdf.joinedCol, text), Not(:joinedCol)]
 end
 
 # function filterBySupplier(suppliers)
 # end
-
+const headers = [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description]
 const df = processDf()
 
 @app begin
@@ -52,7 +52,7 @@ const df = processDf()
     # @out ddf = df
     @in searchText = ""
     @in btnSearchText = false
-    @out theads = names(df)
+    @out theads = headers
     @out trows = getData(df)
     
     @onchange selectedSuppliers begin
@@ -65,7 +65,7 @@ const df = processDf()
     end
 
     @onbutton btnSearchText begin
-        tdf = filterByText(searchText)
+        tdf = filterByText(searchText, selectedSuppliers)
         tmpSuppliers = unique(tdf.Supplier)
         println("selectSupplier", selectedSuppliers)
         println("tmpSuppliers", tmpSuppliers)
