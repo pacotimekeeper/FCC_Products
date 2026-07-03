@@ -47,22 +47,26 @@ const df = processDf()
 @app begin
     @out suppliers = unique(df.Supplier)
     @in selectedSuppliers = unique(df.Supplier)
+    @out tmpSuppliers = unique(df.Supplier)
     
-    @out ddf = df
+    # @out ddf = df
     @in searchText = ""
     @in btnSearchText = false
     @out theads = names(df)
     @out trows = getData(df)
     
-    # @onchange selectedSuppliers begin
-    #     # ddf = filterBySupplier(selectedSuppliers)
-    #     ddf = filterByText(searchText, ddf)
-    #     trows = getData(tdf)
-    # end
+    @onchange selectedSuppliers begin
+        println(selectedSuppliers)
+        println(tmpSuppliers)
+        println(searchText)
+        # ddf = filterBySupplier(selectedSuppliers)
+        # ddf = filterByText(searchText, ddf)
+        # trows = getData(tdf)
+    end
 
     @onbutton btnSearchText begin
         tdf = filterByText(searchText)
-        suppliers = unique(tdf.Supplier)
+        tmpSuppliers = unique(tdf.Supplier)
         trows = getData(tdf)
     end
 
