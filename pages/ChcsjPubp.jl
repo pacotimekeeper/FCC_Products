@@ -31,10 +31,9 @@ function getData(data)
 end
 
 # function filterData(searchText, suppliers)
-function filterData2(searchText)
+function filterByText(searchText)
     tdf = processDf()
     text = lowercase(searchText)
-    # tdf = filter(:Supplier => in(suppliers), tdf)
     tdf.joinedCol = lowercase.(string.(tdf.CHCSJ_Product_Description, tdf.CHCSJ_物品編號, tdf.用途))
     return tdf[contains.(tdf.joinedCol, text), Not(:joinedCol)]
 end
@@ -50,19 +49,19 @@ const df = processDf()
     @out theads = names(df)
     @out trows = getData(df)
     
-    # @onchange selectedSuppliers begin
-    #     tdf = filterData(searchText, selectedSuppliers)
-    #     trows = getData(tdf)
-    # end
+    @onchange selectedSuppliers begin
+        tdf = filterByText(searchText)
+        trows = getData(filter(:Supplier => in(suppliers), tdf))
+    end
 
     @onbutton btnSearchText begin
-        tdf = filterData(searchText, selectedSuppliers)
+        tdf = filterByText(searchText)
         trows = getData(tdf)
     end
 
 end
 
-@page("/", "views/chcsj_pubp_items2.jl.html")
+@page("/", "views/chcsj_pubp_items.jl.html")
 # @page("/", "views/chcsj_pubp_items.jl.html")
 # @page("/chcsj_pubp_items", "chcsj_pubp_items.jl.html")
 
