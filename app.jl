@@ -20,7 +20,7 @@ route("/jsonpayload/:fileName", method = POST) do
         println("jsonpaylod work")
     
         filePath = joinpath(APP_PATH, "data", "$(fileName).jld2")
-        println("file Path is found")
+        println("file Path is found $filePath")
     
         save_object(filePath, DataFrame(jsonPayload))
         println("object is saved")
