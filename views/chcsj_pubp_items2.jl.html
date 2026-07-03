@@ -1,0 +1,25 @@
+
+<div>
+    <q-input label="Search by (用途/ 物品編號/ Description)" v-model="searchText"></q-input>
+    <q-btn label="SEARCH!" color="primary" v-on:click="btnSearchText = true"></q-btn>
+</div>
+
+<hr>
+
+
+<div>
+    <table>
+        <tr>
+            <template v-for="thead in theads">
+                <th>{{thead}}</th>
+            </template>
+        </tr>
+        
+        <template v-for="trow in trows">
+            <tr>
+                <td v-for="v in trow">{{v}}</td>
+            </tr>
+        </template>
+        
+    </table>
+</div>
