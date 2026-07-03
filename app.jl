@@ -35,3 +35,6 @@ end
 include("pages/ChcsjPubp.jl")
 include("pages/Dummy.jl")
 end
+
+# [compat]
+# GenieFramework = "2"

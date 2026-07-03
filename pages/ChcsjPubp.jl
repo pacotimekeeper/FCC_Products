@@ -56,9 +56,9 @@ const df = processDf()
     @out trows = getData(df)
     
     @onchange selectedSuppliers begin
-        println(selectedSuppliers)
-        println(tmpSuppliers)
-        println(searchText)
+        println("selectSupplier", selectedSuppliers)
+        println("tmpSuppliers", tmpSuppliers)
+        println("searchText",searchText)
         # ddf = filterBySupplier(selectedSuppliers)
         # ddf = filterByText(searchText, ddf)
         # trows = getData(tdf)
@@ -67,6 +67,9 @@ const df = processDf()
     @onbutton btnSearchText begin
         tdf = filterByText(searchText)
         tmpSuppliers = unique(tdf.Supplier)
+        println("selectSupplier", selectedSuppliers)
+        println("tmpSuppliers", tmpSuppliers)
+        println("searchText",searchText)
         trows = getData(tdf)
     end
 
