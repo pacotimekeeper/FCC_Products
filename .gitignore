@@ -8,6 +8,8 @@ build/
 target/
 dist/
 log/
+data/
+
 # Compiled artifacts
 *.ji
 *.so
