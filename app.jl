@@ -1,23 +1,28 @@
 #setup of the Genie Framework environment
 module App
+
+using Main.Config
 using GenieFramework
+using JSON
+using JLD2
+using DataFrames
 
-# route("/hello.html") do
-#   html("Hello World")
-# end
+!ispath(joinpath(APP_PATH, "data")) && mkpath(joinpath(APP_PATH, "data"))
 
-# route("/hello.json") do
-#   json("Hello World")
-# end
-
-# route("/hello.txt") do
-#    respond("Hello World", :text)
-# end
-
-
-# include("SearchItem.jl")
-# include("SearchItem2.jl")
-include("pages/ChcsjPubp.jl")
+route("/jsonpayload/:fileName", method = POST) do
+# route("/jsonpayload/mappings", method = POST) do
+    try
+        fileName = params(:fileName, "NO PARAMS")
+        jsonPayload = Genie.Requests.jsonpayload()
+        filePath = joinpath(APP_PATH, "data", "$(fileName).jld2")
+        save_object(filePath, DataFrame(jsonPayload))
+        respond("It works", :text)
+    catch e
+        println(e)
+        respond("try again", :text)
+    end
 end
 
-# searchText = "5690G"
+include("pages/ChcsjPubp.jl")
+include("pages/Dummy.jl")
+end

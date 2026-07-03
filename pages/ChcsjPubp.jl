@@ -1,5 +1,5 @@
 module ChcsjPubp
-
+using Main.Config
 using DataFrames, XLSX
 using GenieFramework
 using JLD2
@@ -12,7 +12,7 @@ using OrderedCollections
 #     age::Int
 # end
 function processDf()
-    mapping = load_object("mappings.jld2")
+    mapping = load_object(joinpath("data", "mappings.jld2"))
     # mapping = DataFrame(XLSX.readtable("_all_mappings.xlsx"))
     mapping = filter("CHCSJ_PUBP(Y/N)" => x-> !ismissing(x) && x =="Y", mapping)
     cols = [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description]
