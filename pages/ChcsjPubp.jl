@@ -12,18 +12,18 @@ using OrderedCollections
 #     age::Int
 # end
 function processDf()
-    mapping = load_object(joinpath("data", "mappings.jld2"))
-    # mapping = DataFrame(XLSX.readtable("_all_mappings.xlsx"))
-    mapping = filter("CHCSJ_PUBP(Y/N)" => x-> !ismissing(x) && x =="Y", mapping)
-    cols = [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description]
-    for col in cols
-        mapping[!, col] .= coalesce.(mapping[!, col], "missing")
-        mapping[!, col] .= string.(mapping[!, col])
-    end
-    # dropmissing!(mapping, :CHCSJ_Product_Description)
-    unique!(mapping, :CHCSJ_Modelo)
-    select!(mapping, cols)
-    sort(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
+    mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
+    # mapping = filter("CHCSJ_PUBP(Y/N)" => x-> !ismissing(x) && x =="Y", mapping)
+    # cols = [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description]
+    # for col in cols
+    #     mapping[!, col] .= coalesce.(mapping[!, col], "missing")
+    #     mapping[!, col] .= string.(mapping[!, col])
+    # end
+    # # dropmissing!(mapping, :CHCSJ_Product_Description)
+    # unique!(mapping, :CHCSJ_Modelo)
+    # select!(mapping, cols)
+    # sort(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
+    mapping
 end
 
 function getData(df)
