@@ -11,11 +11,20 @@ using DataFrames
 
 route("/jsonpayload/:fileName", method = POST) do
 # route("/jsonpayload/mappings", method = POST) do
+    println("AM in post route")
     try
         fileName = params(:fileName, "NO PARAMS")
+        println("AM in post route")
+        
         jsonPayload = Genie.Requests.jsonpayload()
+        println("jsonpaylod work")
+    
         filePath = joinpath(APP_PATH, "data", "$(fileName).jld2")
+        println("file Path is found")
+    
         save_object(filePath, DataFrame(jsonPayload))
+        println("object is saved")
+        
         respond("It works", :text)
     catch e
         println(e)
