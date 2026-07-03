@@ -13,17 +13,17 @@ using OrderedCollections
 # end
 function processDf()
     mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
+    mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
     # mapping = filter("CHCSJ_PUBP(Y/N)" => x-> !ismissing(x) && x =="Y", mapping)
-    # cols = [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description]
+    cols = [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description]
     # for col in cols
     #     mapping[!, col] .= coalesce.(mapping[!, col], "missing")
     #     mapping[!, col] .= string.(mapping[!, col])
     # end
     # # dropmissing!(mapping, :CHCSJ_Product_Description)
-    # unique!(mapping, :CHCSJ_Modelo)
-    # select!(mapping, cols)
-    # sort(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
-    mapping
+    unique!(mapping, :CHCSJ_Modelo)
+    select!(mapping, cols)
+    sort(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
 end
 
 function getData(df)
