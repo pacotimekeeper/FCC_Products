@@ -51,7 +51,7 @@ const df = processDf()
     
     @onchange selectedSuppliers begin
         tdf = filterByText(searchText)
-        trows = getData(filter(:Supplier => in(suppliers), tdf))
+        trows = getData(filter(:Supplier => in(selectedSuppliers), tdf))
     end
 
     @onbutton btnSearchText begin
