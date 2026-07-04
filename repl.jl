@@ -4,17 +4,120 @@ begin
     using GenieFramework
     using JLD2
     using OrderedCollections
+    using HTTP
+    using JSON
+    using Genie.Requests
 end
-using HTTP
-using JSON
-using Genie.Requests
 @genietools
 
+using Main.Config
+APP_PATH = pwd()
+procesDf
+
+
 # 1. Define your standard Julia struct
-# mutable struct User
-#     name::String
-#     age::Int
-# end
+mutable struct Product
+    supplier::String
+    use_case::String
+    code::String
+    desc::String
+end
+APP_PATH = pwd()
+function getDf()
+    mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
+    mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
+    # mapping = filter("CHCSJ_PUBP(Y/N)" => x-> !ismissing(x) && x =="Y", mapping)
+    unique!(mapping, :CHCSJ_Modelo)
+    sort!(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
+    # transform!(groupby(df, :Supplier), nrow => :count)
+    mapping = DataFrames.select(mapping, [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description])
+    return mapping
+end
+
+tdf = getDf()
+tdf.col1_index = combine(groupby(tdf, [:Supplier]), eachindex => :col1_index).col1_index
+tdf.col2_index = combine(groupby(tdf, [:Supplier, :用途]), eachindex => :col2_index).col2_index
+tdf
+
+dfs = []
+groupby(tdf, [:Supplier, :用途])[2]
+tdf.index = 1: size(tdf)[1]
+
+
+function getIndiceForCols(col1::String, col2::String,  df::DataFrame)
+    indice = []
+    for (i, _) in enumerate(eachrow(df))
+        # c1 = 0
+        # c2 = 0
+
+        if i == 1
+            push!(indice, (1, 1))
+            continue
+        end
+
+        if i == 2
+            c1 = df[i, col1] == df[i-1, col1] ? 0 : 1
+            c2 = if c1 == 1 && (df[i, col2] == df[i-1, col2])
+                1
+                else
+                0
+            end
+            push!(indice, (c1, c2))
+            continue
+        end
+        
+        c1 = df[i, col1] == df[i-1, col1] ? 0 : 1
+        c2 = if c1 == 0 && df[i, col2] == df[i-1, col2]
+                0
+            else
+                1
+            end
+        push!(indice, (c1, c2))
+    end
+    return indice
+end
+
+tdf = filter(:Supplier => in(["Medtronic" , "United Orthopedic Corporation"]), tdf)
+
+tdf.indices = getIndiceForCols("Supplier", "用途", tdf)
+transform!(tdf, :indices => AsTable)
+select!(tdf, Not(:indices))
+
+
+tdf.Supplier |> unique
+"Medtronic" , "Smith & Nephew" , "United Orthopedic Corporation"
+st = "str"
+( = 1, b = 2)
+
+tdf = processDf()
+indice = []
+for (i, row) in enumerate(eachrow(tdf))
+    if i == 1
+       push!(indice, 0)
+       continue
+    end
+    
+    if tdf[i, :Supplier] == tdf[i-1, :Supplier]
+        push!(indice, 1)
+    else
+        push!(indice, 0)
+    end
+end
+
+tdf.index .= indice
+rows = [Product(row...) for row in eachrow(tdf)]
+
+
+rows[1].supplier
+# transform1(groupby(df, :Supplier), count => :count)
+# combine(groupby(daf, :Supplier), nrow => :count) |> transform
+# transform!(groupby(df, :Supplier), nrow => :count)
+# combine(row, :Supplier => count)
+
+indice
+eachrow(rows)
+
+my_users = []
 df = DataFrame(XLSX.readtable("_all_mappings.xlsx"))
 df = filter("CHCSJ_PUBP(Y/N)" => x-> !ismissing(x) && x =="Y", df)
 select!(df, :Supplier, :CHCSJ_Modelo, :用途, :CHCSJ_Product_Description)

@@ -1,4 +1,5 @@
 
+<h1>CHCSJ 實用實付</h1>
 <div>
     <q-input label="Search by (用途/ 物品編號/ Description)" v-model="searchText"></q-input>
     <q-btn label="SEARCH!" color="primary" v-on:click="btnSearchText = true"></q-btn>
@@ -9,7 +10,7 @@
 </div>
 <hr>
 
-
+<!-- 
 <div>
     <table>
         <tr>
@@ -24,5 +25,41 @@
             </tr>
         </template>
         
+    </table>
+</div> -->
+<div>
+    <table>
+        <tr>
+            <template v-for="thead in theads">
+                <th>{{thead}}</th>
+            </template>
+        </tr>
+        
+        <!-- <template v-for="product in products">
+            <tr>
+                <td v-for="v in product">
+                    <span>{{v}}</span>
+                </td>
+            </tr>
+        </template> -->
+
+        <template v-for="product in products" :key="index">
+            <tr>
+                <!-- <td v-if="getSpanCount(products, index, 'supplier') > 0" 
+            :rowspan="getSpanCount(products, index, 'supplier')"> -->
+                <td v-if="product.col1_index == 1">
+                    {{product.supplier}}
+                </td>
+                <td v-else></td>
+
+                <td v-if="product.col2_index == 1">
+                    {{product.use_case}}
+                </td>
+                </td>
+                <td v-else></td>
+                <td>{{product.code}}</td>
+                <td>{{product.desc}}</td>
+            </tr>
+        </template>
     </table>
 </div>
