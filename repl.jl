@@ -8,12 +8,21 @@ begin
     using JSON
     using Genie.Requests
 end
-@genietools
 
-using Main.Config
 APP_PATH = pwd()
-procesDf
 
+
+function getDf()
+    mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
+    mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
+    unique!(mapping, :CHCSJ_Modelo)
+    sort!(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
+    mapping = DataFrames.select(mapping, [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description])
+    return mapping
+end
+
+df = getDf()
+filter(x-> x!="missing", unique(df.用途))
 
 # 1. Define your standard Julia struct
 mutable struct Product

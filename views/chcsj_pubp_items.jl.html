@@ -4,9 +4,12 @@
     <q-input label="Search by (用途/ 物品編號/ Description)" v-model="searchText"></q-input>
     <q-btn label="SEARCH!" color="primary" v-on:click="btnSearchText = true"></q-btn>
 </div>
-
-<div v-for="supplier in suppliers">
-    <q-toggle v-model="selectedSuppliers" :label="supplier" :val="supplier"/>
+<div>
+    <div v-for="supplier in suppliers">
+        <q-toggle v-model="selectedSuppliers" :label="supplier" :val="supplier"/>
+    </div>
+    <!-- <q-select v-model="model" :options="useCases" label="用途"></q-select>
+    <q-select :model-value="model" :options="useCases" label="用途"></q-select> -->
 </div>
 <hr>
 
