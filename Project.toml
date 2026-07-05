@@ -1,5 +1,4 @@
 [deps]
-Bonito = "824d6782-a2ef-11e9-3a09-e5662e0c26f8"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DuckDB = "d2f5444f-75bc-4fdf-ac35-56f514c445e1"
 Genie = "c43c736e-a2d1-11e8-161f-af95117fbd1e"
@@ -12,4 +11,3 @@ OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 StructTypes = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"
 XLSX = "fdbf4ff8-1666-58a4-91e7-1b58723a45e0"
-

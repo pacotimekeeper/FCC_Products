@@ -8,7 +8,7 @@
     <div v-for="supplier in suppliers">
         <q-toggle v-model="selectedSuppliers" :label="supplier" :val="supplier"/>
     </div>
-    <q-select v-model="model" :options="useCases" label="用途"></q-select>
+    <q-select v-model="selectedCase" :options="useCases" label="用途"></q-select>
 </div>
 <hr>
 
