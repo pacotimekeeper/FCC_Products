@@ -58,14 +58,14 @@ const df = getDf()
     @in searchText = ""
     @in btnSearchText = false
 
-    @out model = nothing
-    @in useCases = filter(x-> x!="missing", unique(df.用途))
+    @in selectedCase = ""
+    @out useCases = filter(x-> x!="missing", unique(df.用途))
 
     @out theads = ["Supplier", "用途", "物品編號", "Product Description"]
     @out products = getDf() |> addColIndice |> getProducts
     
-    @onchange useCases begin
-        println(useCases)
+    @onchange selectedCase begin
+        println(selectedCase)
     end
 
     @onchange selectedSuppliers begin
