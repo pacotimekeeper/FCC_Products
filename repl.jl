@@ -11,16 +11,21 @@ end
 
 APP_PATH = pwd()
 
+mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
+mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
+mapping = flatten(transform(mapping, :CHCSJ_物品編號 => ByRow(x -> split(x, "/")) => :CHCSJ_物品編號), :CHCSJ_物品編號)
 
-function getDf()
-    mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
-    mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
-    unique!(mapping, :CHCSJ_Modelo)
-    sort!(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
-    mapping = DataFrames.select(mapping, [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description])
-    return mapping
-end
+code = "2309053446"
+code = "2309056038"
+in(code, mapping.CHCSJ_物品編號)
 
+filter(x -> contains(x, code), mapping.CHCSJ_物品編號)
+
+
+unique!(mapping, [:CHCSJ_物品編號, :CHCSJ_Modelo])
+sort!(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
+mapping = DataFrames.select(mapping, [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description])
+return mapping
 df = getDf()
 filter(x-> x!="missing", unique(df.用途))
 
@@ -177,3 +182,4 @@ df = load_object("data/mappingsxx.jld2")
 describe(df)
 @. df[isnothing(df.Brand_Name), :]
 @. df[ismissing(df.Brand_Name), :]
+
