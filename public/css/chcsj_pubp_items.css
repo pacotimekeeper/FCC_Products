@@ -1,3 +1,91 @@
+
+.container-data-filter {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center; */
+  /* background-color: DodgerBlue; */
+}
+
+.container-suppliers {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  /* background-color: DodgerBlue; */
+}
+
+/* .container-data-filter div {
+  background-color: #f1f1f1;
+  margin: 10px;
+  padding: 20px;
+  font-size: 24px;
+} */
+
+/* Container setup */
+.info-wrapper {
+  position: relative;
+  display: inline-block;
+  /* margin: 50px; */
+}
+
+/* Style the button */
+.trigger-btn {
+  /* padding: 10px 20px; */
+  cursor: pointer;
+  /* background-color: #4f46e5; */
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+/* The hidden Info Box */
+.info-box {
+  position: absolute;
+  top: 100%;           /* Position below */
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;    /* Space between icon and box */
+  padding: 15px;
+  background-color: #333;
+  color: white;
+  border-radius: 8px;
+  width: 200px;
+  text-align: center;
+  
+  /* Visibility Logic */
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  
+  /* Shadow */
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+}
+
+/* The Icon styling */
+.icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* THE HOVER TRIGGER */
+.info-wrapper:hover .info-box {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Small arrow at the bottom of tooltip */
+.info-box::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+
 table {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;

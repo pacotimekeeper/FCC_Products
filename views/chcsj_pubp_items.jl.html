@@ -1,15 +1,37 @@
 
 <h1>CHCSJ 實用實付</h1>
-<div>
-    <q-input label="Search by (用途/ 物品編號/ Description)" v-model="searchText"></q-input>
-    <q-btn label="SEARCH!" color="primary" v-on:click="btnSearchText = true"></q-btn>
-</div>
-<div>
-    <div v-for="supplier in suppliers">
-        <q-toggle v-model="selectedSuppliers" :label="supplier" :val="supplier"/>
+
+<div class="container-data-filter">
+    <div class="container-suppliers" style="width: 45%;">
+        <div style="display: flex; flex-direction: row;">
+            <b>Search by (用途/ 物品編號/ Description)</b>
+            <div class="info-wrapper">
+                <button class="trigger-btn">ℹ️</button> 
+                <!-- This is the part that stays hidden -->
+                <div class="info-box">
+                    <span class="icon">💡</span>
+                    <p>This is some extra information that appears when you hover over the button.</p>
+                </div>
+            </div> 
+        </div>
+        <q-input v-model="searchText" style="width: 100%"></q-input>
+        <q-btn label="SEARCH!" color="primary" v-on:click="btnSearchText = true" style="width: 25%"></q-btn>
+
     </div>
-    <!-- <q-select v-model="selectedCase" :options="useCases" label="用途"></q-select> -->
+    
+    <div class="container-suppliers">
+    <!-- <div> -->
+        <b>Suppliers</b>
+        <template v-for="supplier in suppliers">
+            <q-toggle v-model="selectedSuppliers" :label="supplier" :val="supplier"/>
+        </template>
+    <!-- </div> -->
+    </div>
+    
+    
 </div>
+
+
 <hr>
 
 <!-- 
