@@ -16,16 +16,15 @@ route("/jsonpayload/:fileName", method = POST) do
     println("AM in post route")
     try
         fileName = params(:fileName, "NO PARAMS")
-        println("AM in post route")
-        
+
+        print("Working on Json Payload for $(fileName)...")
         jsonPayload = Genie.Requests.jsonpayload()
-        println("jsonpaylod work")
+        println("completed")
     
+        print("Saving JLD2 for $(fileName).jld2...")
         filePath = joinpath(APP_PATH, "data", "$(fileName).jld2")
-        println("file Path is found $filePath")
-    
         save_object(filePath, DataFrame(jsonPayload))
-        println("object is saved")
+        print("Done!")
         
         respond("It works", :text)
     catch e
