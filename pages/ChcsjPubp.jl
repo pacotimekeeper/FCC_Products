@@ -7,7 +7,7 @@ using JLD2
 using OrderedCollections
 @genietools
 
-APP_PATH = pwd()
+# APP_PATH = pwd()
 mutable struct Product
     supplier::String
     use_case::String
@@ -59,49 +59,102 @@ function addColIndice(data)
     data
 end
 
-function filterData(searchText, selectedSuppliers)
+function filterData(searchText, selectedSuppliers, selectedCases)
     df = getDf()
+    
     text = replace(lowercase(searchText), " "=>"")
     df.joinedCol = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
     df = df[contains.(df.joinedCol, text), Not(:joinedCol)]
+    
     df = addColIndice(df)
     df = filter(:Supplier => in(selectedSuppliers), df)
+    df = filter(:用途 => in(selectedCases), df)
     return df
 end
 
-function processDf()
-    tdf = getDf()
-    return addColIndice(tdf)
+function filterByText(searchText, selectedSuppliers, selectedCases)
+    df = getDf()
+    
+    df.joinedCol = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
+    df = df[contains.(df.joinedCol, searchText), Not(:joinedCol)]
+    
+    df = addColIndice(df)
+
+    df = filter(:Supplier => in(selectedSuppliers), df)
+    df = filter(:用途 => in(selectedCases), df)
+    return df
+end
+
+
+function filterByCases(searchText, selectedSuppliers, selectedCases)
+    df = getDf()
+    df = filter(:用途 => in(selectedCases), df)
+
+    df.joinedCol = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
+    df = df[contains.(df.joinedCol, searchText), Not(:joinedCol)]
+    
+    df = addColIndice(df)
+    
+    df = filter(:Supplier => in(selectedSuppliers), df)
+    return df
 end
 
 df = getDf()
 
 @app begin
-    @out suppliers = unique(df.Supplier) |> sort
-    @in selectedSuppliers = unique(df.Supplier) |> sort
-
     @in searchText = ""
-    @in btnSearchText = false
+    @in btnClearSearch = false
 
-    @in selectedCase = ""
-    @out useCases = filter(x-> x!="missing", unique(df.用途))
+    @in suppliers = unique(df.Supplier) |> sort
+    @in selectedSuppliers = String[]
+
+    @in caseOptions = unique(df.用途) |> sort
+    @in selectedCases = String[]
+    # @out useCases = filter(x-> x!="missing", unique(df.用途))
 
     @out theads = ["Supplier", "用途", "物品編號", "Product Description", "餘量"]
     @out products = getDf() |> addColIndice |> getProducts
     
-    @onchange selectedCase begin
-        println(selectedCase)
+    @onbutton btnClearSearch begin
+        searchText = ""
+        selectedSuppliers = String[]
+        selectedCases = String[]
     end
 
-    @onchange selectedSuppliers begin
-        products = filterData(searchText, selectedSuppliers) |> getProducts
-    end
+    @onchange searchText, selectedCases, selectedSuppliers begin 
+        df = getDf()
     
-    @onbutton btnSearchText begin
-        products = filterData(searchText, selectedSuppliers) |> getProducts
+        # 1. Normalize search term once
+        search_term = isempty(searchText) ? "" : lowercase(strip(searchText))
+        
+        # 2. Create the masks using vectorized operations
+        # We use map-like comparisons to ensure compatibility with all types (Strings, Missing, etc.)
+        
+        # Search Mask: Check if join-text contains search_term
+        joined_text = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
+        search_mask = map(x -> isempty(search_term) || contains(x, search_term), joined_text)
+        
+        # Supplier Mask: Check if the row's supplier exists in our selection
+        supplier_mask = map(x -> isempty(selectedSuppliers) || x in selectedSuppliers, df.Supplier)
+        
+        # Case/Tag Mask: Check if the row's usage exists in our selection
+        case_mask = map(x -> isempty(selectedCases) || x in selectedCases, df.用途)
+
+        # 3. Combine Masks (True only if ALL conditions are met)
+        # We use standard Julia logical AND for boolean arrays
+        final_mask = search_mask .& supplier_mask .& case_mask
+        
+        # 4. Filter and update products
+        filtered_df = df[final_mask, :]
+
+        if isempty(filtered_df)
+            products = Product[]
+        else
+            products = filtered_df |> addColIndice |> getProducts
+        end
     end
 end
 
-@page("/", "views/chcsj_pubp_items.jl.html", layout= "public/layout/chcsj_pubp_items.html")
+@page("/users/chcsj_pubp_items", "views/chcsj_pubp_items.jl.html", layout= "public/layout/chcsj_pubp_items.html")
 
 end

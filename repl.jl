@@ -9,210 +9,155 @@ begin
     using Genie.Requests
 end
 
+begin
+# module ChcsjPubp
 APP_PATH = pwd()
+# using Main.Config
+# using Main.Utils
+using DataFrames, XLSX
+using GenieFramework
+using JLD2
+using OrderedCollections
+# @genietools
 
-mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
-mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
-mapping = flatten(transform(mapping, :CHCSJ_物品編號 => ByRow(x -> split(x, "/")) => :CHCSJ_物品編號), :CHCSJ_物品編號)
-
-code = "2309053446"
-code = "2309056038"
-in(code, mapping.CHCSJ_物品編號)
-
-filter(x -> contains(x, code), mapping.CHCSJ_物品編號)
-
-
-unique!(mapping, [:CHCSJ_物品編號, :CHCSJ_Modelo])
-sort!(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
-mapping = DataFrames.select(mapping, [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description])
-return mapping
-df = getDf()
-filter(x-> x!="missing", unique(df.用途))
-
-# 1. Define your standard Julia struct
+# APP_PATH = pwd()
 mutable struct Product
     supplier::String
     use_case::String
     code::String
     desc::String
+    ot_qty::Int
+    col1_index::Int
+    col2_index::Int
 end
-APP_PATH = pwd()
-function getDf()
-    mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
-    mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
-    # mapping = filter("CHCSJ_PUBP(Y/N)" => x-> !ismissing(x) && x =="Y", mapping)
-    unique!(mapping, :CHCSJ_Modelo)
-    sort!(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
-    # transform!(groupby(df, :Supplier), nrow => :count)
-    mapping = DataFrames.select(mapping, [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description])
-    return mapping
-end
-
-tdf = getDf()
-tdf.col1_index = combine(groupby(tdf, [:Supplier]), eachindex => :col1_index).col1_index
-tdf.col2_index = combine(groupby(tdf, [:Supplier, :用途]), eachindex => :col2_index).col2_index
-tdf
-
-dfs = []
-groupby(tdf, [:Supplier, :用途])[2]
-tdf.index = 1: size(tdf)[1]
-
-
-function getIndiceForCols(col1::String, col2::String,  df::DataFrame)
-    indice = []
-    for (i, _) in enumerate(eachrow(df))
-        # c1 = 0
-        # c2 = 0
-
-        if i == 1
-            push!(indice, (1, 1))
-            continue
-        end
-
-        if i == 2
-            c1 = df[i, col1] == df[i-1, col1] ? 0 : 1
-            c2 = if c1 == 1 && (df[i, col2] == df[i-1, col2])
-                1
-                else
-                0
-            end
-            push!(indice, (c1, c2))
-            continue
-        end
-        
-        c1 = df[i, col1] == df[i-1, col1] ? 0 : 1
-        c2 = if c1 == 0 && df[i, col2] == df[i-1, col2]
-                0
-            else
-                1
-            end
-        push!(indice, (c1, c2))
-    end
-    return indice
-end
-
-tdf = filter(:Supplier => in(["Medtronic" , "United Orthopedic Corporation"]), tdf)
-
-tdf.indices = getIndiceForCols("Supplier", "用途", tdf)
-transform!(tdf, :indices => AsTable)
-select!(tdf, Not(:indices))
-
-
-tdf.Supplier |> unique
-"Medtronic" , "Smith & Nephew" , "United Orthopedic Corporation"
-st = "str"
-( = 1, b = 2)
-
-tdf = processDf()
-indice = []
-for (i, row) in enumerate(eachrow(tdf))
-    if i == 1
-       push!(indice, 0)
-       continue
-    end
-    
-    if tdf[i, :Supplier] == tdf[i-1, :Supplier]
-        push!(indice, 1)
-    else
-        push!(indice, 0)
-    end
-end
-
-tdf.index .= indice
-rows = [Product(row...) for row in eachrow(tdf)]
-
-
-rows[1].supplier
-# transform1(groupby(df, :Supplier), count => :count)
-# combine(groupby(daf, :Supplier), nrow => :count) |> transform
-# transform!(groupby(df, :Supplier), nrow => :count)
-# combine(row, :Supplier => count)
-
-indice
-eachrow(rows)
-
-my_users = []
-df = DataFrame(XLSX.readtable("_all_mappings.xlsx"))
-df = filter("CHCSJ_PUBP(Y/N)" => x-> !ismissing(x) && x =="Y", df)
-select!(df, :Supplier, :CHCSJ_Modelo, :用途, :CHCSJ_Product_Description)
-
-gs = groupby(df, :Supplier)
-sdf = unique(gs[1], :CHCSJ_Modelo)
-gdf = groupby(sdf, :用途)
-df = DataFrame(gdf[1])
-# 用途	Category	Sub_Category1	Sub_Category2
-
-# for (k,v) in pairs(gs)
-#     println(v)
-#     println(k.Supplier)
-# end
-# keys(gs)
-# names(df)
-
-# SAP_Code
-# Supplier
-# Item_Code	Ref_Code	Product_Description	Product_Description(CN)	Brand_Name	UOM	Conv	Conv_Stock	Transfer_Price	Currency	Price_Validity	COO	Safety_Stock	Shelf_Life(day)	Class(Tools/Implants/Medical Device/Dressing)	用途	Category	Sub_Category1	Sub_Category2	Purchase(Y/N)	GTIN	銷售團隊	銷售業務代表	Remark	CHCSJ_Selling_Price	
-# CHCSJ_物品編號	
-# CHCSJ_PUBP(Y/N)	CHCSJ_483	CHCSJ_Modelo	CHCSJ_Product_Description	KWH_Selling_Price	KWH_品項代碼	KWH_Consign(Y/N)	PUMCH_Selling_Price	UH_Selling_Price	YK_Selling_Price	Gov_Selling_Price	Clinic_Selling_Price	index	CHCSJ_PUBP_Active(Y/N)
-
-using JSON
-using HTTP
-try
-# df = load_object(joinpath(pwd(), "temp_data", "mappings.jld2"))
-    df = XLSX.readtable("_all_mappings.xlsx", "Sheet1") |> DataFrame
-    jsonPayload = JSON.json(df)
-    # POST payload as raw binary data stream with correct content-type header
-    response = HTTP.post(
-        "http://127.0.0.1:8080/jsonpayload/mappings",
-        ["Content-Type" => "application/json"],
-        jsonPayload
-    # verbose = 0
-    );
-    println("Upload Status: ", response.status)
-    println("Server Response: ", String(response.body))
-    println("Client success")
-catch e
-    println("Upload failed: ", e)
-end
-
-curDir = @__DIR__
-parentDir = dirname(curDir)
-
-df = load_object("data/mappingsxx.jld2")
-describe(df)
-@. df[isnothing(df.Brand_Name), :]
-@. df[ismissing(df.Brand_Name), :]
-
-using DataFrames, XLSX
-using GenieFramework
-using JLD2
-using OrderedCollections
-
-APP_PATH = @__DIR__
-
+# APP_PATH = pwd()
 function getMappingDf()
     mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
     mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
     mapping.CHCSJ_物品編號 .= replace.(mapping.CHCSJ_物品編號, " "=> "")
+
+    mapping.tempCol .= ifelse.(mapping.CHCSJ_Modelo .== "missing", mapping.Item_Code, mapping.CHCSJ_Modelo)
+    mapping.CHCSJ_物品編號 .= ifelse.(mapping.CHCSJ_物品編號 .== "missing", string.("(missing) for ", mapping.tempCol), mapping.CHCSJ_物品編號)
+    
+    # mapping.CHCSJ_物品編號 .= ifelse.(mapping.CHCSJ_物品編號 .== "missing", string.("(missing) for ", mapping.CHCSJ_Modelo), mapping.CHCSJ_物品編號)
+    mapping.CHCSJ_Product_Description .= ifelse.(mapping.CHCSJ_Product_Description .== "missing", mapping.Product_Description, mapping.CHCSJ_Product_Description)
+    
     mapping = flatten(transform(mapping, :CHCSJ_物品編號 => ByRow(x -> string.(split(x, "/"))) => :CHCSJ_物品編號), :CHCSJ_物品編號)
     unique!(mapping, :CHCSJ_物品編號)
-    mapping.CHCSJ_Product_Description .= ifelse.(mapping.CHCSJ_Product_Description .== "missing", mapping.Product_Description, mapping.CHCSJ_Product_Description)
-    sort!(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
+    
     mapping = DataFrames.select(mapping, [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description])
     rename!(x-> replace(x, "CHCSJ_"=> ""), mapping)
     return mapping
 end
 
-mapping = getMappingDf()
-
 function getTendersDf()
     tenders = load_object(joinpath(APP_PATH, "data", "all_tenders.jld2"))
     tenders = tenders[tenders.標書_SAP狀態 .=="尚欠", [:物品編號, :相差]]
-    ismissing.(tenders.相差) |> sum
     # tenders[isnothing.(tenders.相差) |> sum 
-    combine(groupby(tenders, :物品編號), :相差 => sum => :Outstanding_Qty)
+    return combine(groupby(tenders, :物品編號), :相差 => sum => :Outstanding_Qty)
 end
 
 function getDf()
-    leftjoin(getMappingDf(), getTendersDf(), on =:物品編號)
+    df = leftjoin(getMappingDf(), getTendersDf(), on =:物品編號)
+    df.Outstanding_Qty = coalesce.(df.Outstanding_Qty, 0)
+    sort!(df, [:Supplier, :用途, :Product_Description], rev = false)
+    return df
 end
+
+getProducts(data) = [Product(row...) for row in eachrow(data)]
+
+function addColIndice(data)
+    data.col1_index = combine(groupby(data, [:Supplier]), eachindex => :col1_index).col1_index
+    data.col2_index = combine(groupby(data, [:Supplier, :用途]), eachindex => :col2_index).col2_index
+    data
+end
+
+function filterData(searchText, selectedSuppliers, selectedCases)
+    df = getDf()
+    
+    text = replace(lowercase(searchText), " "=>"")
+    df.joinedCol = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
+    df = df[contains.(df.joinedCol, text), Not(:joinedCol)]
+    
+    df = addColIndice(df)
+    df = filter(:Supplier => in(selectedSuppliers), df)
+    df = filter(:用途 => in(selectedCases), df)
+    return df
+end
+
+function filterByText(searchText, selectedSuppliers, selectedCases)
+    df = getDf()
+    
+    df.joinedCol = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
+    df = df[contains.(df.joinedCol, searchText), Not(:joinedCol)]
+    
+    df = addColIndice(df)
+
+    df = filter(:Supplier => in(selectedSuppliers), df)
+    df = filter(:用途 => in(selectedCases), df)
+    return df
+end
+
+
+function filterByCases(searchText, selectedSuppliers, selectedCases)
+    df = getDf()
+    df = filter(:用途 => in(selectedCases), df)
+
+    df.joinedCol = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
+    df = df[contains.(df.joinedCol, searchText), Not(:joinedCol)]
+    
+    df = addColIndice(df)
+    
+    df = filter(:Supplier => in(selectedSuppliers), df)
+    return df
+end
+end
+df = getDf()
+
+begin
+
+searchText = ""
+btnSearchText = false
+
+suppliers = unique(df.Supplier) |> sort
+selectedSuppliers = String[]
+
+# @in selectedSuppliers = unique(df.Supplier) |> sort
+
+caseOptions = unique(df.用途) |> sort
+selectedCases = String[]
+useCases = filter(x-> x!="missing", unique(df.用途))
+
+theads = ["Supplier", "用途", "物品編號", "Product Description", "餘量"]
+products = getDf() |> addColIndice |> getProducts
+end
+
+tdf = getDf()
+
+tdf.joinText = lowercase.(string.(tdf.Product_Description, tdf.物品編號, tdf.用途))
+
+selectedSuppliers = ["Baxter", "Medtronic"]
+df
+results = []
+
+isempty(selectedSuppliers) || eachrow(df)[1].Supplier in selectedSuppliers
+for row in eachrow(df)
+    println(row.Supplier in selectedSuppliers)
+    # match_search = isempty(searchText) || contains(lowercase(row.joinText), searchText)
+                # Check multi-select 1 match (empty selection means "show all")
+    match_cat = isempty(selectedSuppliers) || row.Supplier in selectedSuppliers
+    
+    # Check multi-select 2 match (empty selection means "show all")
+    # match_tag = isempty(selectedCases) || row.用途 in selectedCases
+    
+    # if match_search && match_cat && match_tag
+    #     push!(results)
+    # end
+    if match_cat
+        push!(results, row)
+    end
+end
+
+tdf = DataFrame(results)
+
+products = tdf |> addColIndice |> getProducts

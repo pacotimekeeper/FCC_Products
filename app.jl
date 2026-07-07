@@ -34,7 +34,7 @@ route("/jsonpayload/:fileName", method = POST) do
 end
 
 include("pages/ChcsjPubp.jl")
-include("pages/Dummy.jl")
+# include("pages/Dummy.jl")
 end
 
 # [compat]

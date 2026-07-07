@@ -2,41 +2,53 @@
 <h1>CHCSJ 實用實付</h1>
 
 <div class="container-data-filter">
-    <div class="container-suppliers" style="width: 45%;">
-        <div style="display: flex; flex-direction: row;">
-            <b>Search by (用途/ 物品編號/ Description)</b>
-            <div class="info-wrapper">
-                <button class="trigger-btn">ℹ️</button> 
-                <!-- This is the part that stays hidden -->
-                <div class="info-box">
-                    <span class="icon">💡</span>
-                    <p>1. Enlisted criteria: Assure Column SAP_Code & CHCSJ_PUBP is filled.</p>
-                    <p>2. Diplay purpose: Fill in 用途, CHCSJ_Product_Description, CHCSJ_Modelo and Item_Code
-                    <p># Example CHCSJ_Product_Description -> 722022XX BioSure PK Screw SIZE XX x XXmm</p>
-                </div>
-            </div> 
-        </div>
-        <q-input v-model="searchText" style="width: 100%"></q-input>
-        <q-btn label="SEARCH!" color="primary" v-on:click="btnSearchText = true" style="width: 25%"></q-btn>
+    <div class="container-data-filterby" style="width: 35%">
+        <div class="input-group-container">
+            <!-- Label Group -->
+            <div class="label-block">
+                <b>Search by <br>(用途/ 物品編號/ Description)</b>
+            </div>
 
+            <!-- Input Group -->
+            <div class="input-group">
+                <q-input v-model="searchText" :rules="[required]" placeholder="Enter search term..."></q-input>
+                <q-btn 
+                    icon="delete" 
+                    color="primary" 
+                    @click="btnClearSearch = true"
+                    class="clear-btn"
+                    style="min-width: 80px;">
+                    Clear
+                </q-btn>
+            </div>
+        </div>
     </div>
-    
-    <div class="container-suppliers">
-    <!-- <div> -->
+
+    <div class="container-data-filterby">
         <b>Suppliers</b>
-        <template v-for="supplier in suppliers">
-            <q-toggle v-model="selectedSuppliers" :label="supplier" :val="supplier"/>
-        </template>
-    <!-- </div> -->
+        <q-select
+          filled
+          :options="suppliers"
+          v-model="selectedSuppliers"
+          multiple
+          style="width: 250px"
+        />
     </div>
     
+    <div class="container-data-filterby">
+        <b>用途</b>
+        <q-select
+          filled
+          :options="caseOptions"
+          v-model="selectedCases"
+          multiple
+          style="width: 250px"
+        />
+    </div>
     
 </div>
+<!-- <hr> -->
 
-
-<hr>
-
-<!-- 
 <div>
     <table>
         <tr>
@@ -45,34 +57,8 @@
             </template>
         </tr>
         
-        <template v-for="trow in trows">
-            <tr>
-                <td v-for="v in trow">{{v}}</td>
-            </tr>
-        </template>
-        
-    </table>
-</div> -->
-<div>
-    <table>
-        <tr>
-            <template v-for="thead in theads">
-                <th>{{thead}}</th>
-            </template>
-        </tr>
-        
-        <!-- <template v-for="product in products">
-            <tr>
-                <td v-for="v in product">
-                    <span>{{v}}</span>
-                </td>
-            </tr>
-        </template> -->
-
         <template v-for="product in products" :key="index">
             <tr>
-                <!-- <td v-if="getSpanCount(products, index, 'supplier') > 0" 
-            :rowspan="getSpanCount(products, index, 'supplier')"> -->
                 <td v-if="product.col1_index == 1">
                     {{product.supplier}}
                 </td>

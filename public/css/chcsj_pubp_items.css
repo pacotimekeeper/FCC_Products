@@ -6,11 +6,44 @@
   /* background-color: DodgerBlue; */
 }
 
-.container-suppliers {
+.container-data-filterby {
   display: flex;
   flex-direction: column;
   padding: 15px;
+  /* border-style: solid;
+  border-radius: 25px; */
+  margin: 5px;
   /* background-color: DodgerBlue; */
+}
+
+.search-container {
+  position: relative; /* Context for absolute positioning */
+  display: inline-block;
+  width: 100%
+  /* width: 300px; */
+}
+
+.search-container input {
+  width: 100px;
+  box-sizing: border-box;
+  padding: 10px 35px 10px 15px; /* Leave right padding for button space */
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%); /* Centered vertically */
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  display: none; /* Initially hidden */
 }
 
 /* .container-data-filter div {
