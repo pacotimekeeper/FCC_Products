@@ -2,6 +2,8 @@
 .container-data-filter {
   display: flex;
   flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
   /* justify-content: center; */
   /* background-color: DodgerBlue; */
 }
@@ -9,10 +11,11 @@
 .container-data-filterby {
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: 5px;
   /* border-style: solid;
   border-radius: 25px; */
   margin: 5px;
+  width: 30%;
   /* background-color: DodgerBlue; */
 }
 
