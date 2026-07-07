@@ -83,6 +83,9 @@
                 <td v-else></td>
                 <td>{{product.code}}</td>
                 <td>{{product.desc}}</td>
+                <td :style="{ color: product.ot_qty < 5 ? 'blue' : 'grey' }">
+                    {{product.ot_qty}}
+                </td>
             </tr>
         </template>
     </table>

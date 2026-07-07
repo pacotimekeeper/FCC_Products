@@ -183,3 +183,36 @@ describe(df)
 @. df[isnothing(df.Brand_Name), :]
 @. df[ismissing(df.Brand_Name), :]
 
+using DataFrames, XLSX
+using GenieFramework
+using JLD2
+using OrderedCollections
+
+APP_PATH = @__DIR__
+
+function getMappingDf()
+    mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
+    mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
+    mapping.CHCSJ_物品編號 .= replace.(mapping.CHCSJ_物品編號, " "=> "")
+    mapping = flatten(transform(mapping, :CHCSJ_物品編號 => ByRow(x -> string.(split(x, "/"))) => :CHCSJ_物品編號), :CHCSJ_物品編號)
+    unique!(mapping, :CHCSJ_物品編號)
+    mapping.CHCSJ_Product_Description .= ifelse.(mapping.CHCSJ_Product_Description .== "missing", mapping.Product_Description, mapping.CHCSJ_Product_Description)
+    sort!(mapping, [:Supplier, :用途, :CHCSJ_Product_Description], rev = false)
+    mapping = DataFrames.select(mapping, [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description])
+    rename!(x-> replace(x, "CHCSJ_"=> ""), mapping)
+    return mapping
+end
+
+mapping = getMappingDf()
+
+function getTendersDf()
+    tenders = load_object(joinpath(APP_PATH, "data", "all_tenders.jld2"))
+    tenders = tenders[tenders.標書_SAP狀態 .=="尚欠", [:物品編號, :相差]]
+    ismissing.(tenders.相差) |> sum
+    # tenders[isnothing.(tenders.相差) |> sum 
+    combine(groupby(tenders, :物品編號), :相差 => sum => :Outstanding_Qty)
+end
+
+function getDf()
+    leftjoin(getMappingDf(), getTendersDf(), on =:物品編號)
+end
