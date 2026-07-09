@@ -2,7 +2,6 @@
 module App
 
 using Main.Config
-# using Main.Utils
 
 using GenieFramework
 using JSON
