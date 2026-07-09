@@ -1,4 +1,5 @@
 [deps]
+Chain = "8be319e6-bccf-4806-a6f7-6fae938471bc"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DuckDB = "d2f5444f-75bc-4fdf-ac35-56f514c445e1"
 Genie = "c43c736e-a2d1-11e8-161f-af95117fbd1e"
@@ -7,6 +8,7 @@ HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
+Match = "7eb4fadd-790c-5f42-8a69-bfa0b872bfbf"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 StructTypes = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"

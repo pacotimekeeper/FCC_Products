@@ -65,15 +65,36 @@
                 <td v-else></td>
 
                 <td v-if="product.col2_index == 1">
-                    {{product.use_case}}
+                    {{product.usecase}}
                 </td>
                 </td>
                 <td v-else></td>
-                <td>{{product.code}}</td>
-                <td>{{product.desc}}</td>
-                <td :style="{ color: product.ot_qty < 5 ? 'blue' : 'grey' }">
-                    {{product.ot_qty}}
+                <td>
+                    {{product.code}}
+                    <br>
+                    <b>{{product.desc}}</b>
                 </td>
+                
+                <td :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey' }">
+                    {{product.otNotaQty}}
+                </td>
+
+                <td v-if="product.openTenderInfo != 'missing'" class="htf has-info" :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey' }">
+                    {{product.otTenderQty}}
+                    <div class="hidden-info">{{product.openTenderInfo}}</div>
+                </td>
+                <td v-else :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey' }">
+                    {{product.otTenderQty}}
+                </td>
+                <!-- <td v-else class="htf " :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey' }">
+                    {{product.otTenderQty}}
+                </td> -->
+
+                <!-- <td class="htf" style="color: product.openTenderInfo != 'missing' ? 'green' : (product.otNotaQty < 5 ? 'blue' : 'grey'))">
+                    {{product.otTenderQty}}
+                    <div class="hidden-info">{{product.openTenderInfo}}</div>
+                </td> -->
+
             </tr>
         </template>
     </table>
