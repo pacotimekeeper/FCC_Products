@@ -89,16 +89,16 @@ end
 
 getProducts(data) = [Product(row...) for row in eachrow(data)]
 
-idf = getdf()
+# idf = getdf()
 
 @app begin
     @in searchText = ""
     @in btnClearSearch = false
 
-    @in suppliers = unique(idf.Supplier) |> sort
+    @in suppliers = unique(getdf().Supplier) |> sort
     @in selectedSuppliers = String[]
 
-    @in caseOptions = unique(idf.用途) |> sort
+    @in caseOptions = unique(getdf().用途) |> sort
     @in selectedCases = String[]
     # @out useCases = filter(x-> x!="missing", unique(df.用途))
 
