@@ -38,6 +38,7 @@ function getChcsjPubpMapping()
     return mapping
 end
 
+# APP_PATH = pwd()
 function getdf()
     mapping = getChcsjPubpMapping()
     df = load_object("data/all_tenders_notas.jld2")
