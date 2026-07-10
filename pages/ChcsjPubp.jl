@@ -39,37 +39,36 @@ function getChcsjPubpMapping()
 end
 
 function getdf()
-    
     mapping = getChcsjPubpMapping()
     df = load_object("data/all_tenders_notas.jld2")
 
     df = df[df.Customer .== "CHCSJ", :]
+    # for col in [:Nota_SAP狀態, :Nota_手動狀態]
+    #     df[!, col] .= coalesce.(df[!, col], "missing")
+    # end
 
-    for col in [:Nota_SAP狀態, :Nota_手動狀態]
-        df[!, col] .= coalesce.(df[!, col], "missing")
-    end
-
-    df.標書_要求供貨 = ifelse.(isnothing.(df.標書_要求供貨), 0, df.標書_要求供貨) ### Need type check in DataLoad
-    df.標書_相差 = ifelse.(isnothing.(df.標書_相差), 0, df.標書_相差) ### Need type check in DataLoad
-    df.Nota_相差 = ifelse.(isnothing.(df.Nota_相差), 0, df.標書_相差) ### Need type check in DataLoad
-    df.NOTA_NO = ifelse.(isnothing.(df.NOTA_NO), "missing", df.NOTA_NO) ### Need type check in DataLoad
+    # df.標書_要求供貨 = ifelse.(isnothing.(df.標書_要求供貨), 0, df.標書_要求供貨) ### Need type check in DataLoad
+    # df.標書_相差 = ifelse.(isnothing.(df.標書_相差), 0, df.標書_相差) ### Need type check in DataLoad
+    # df.Nota_相差 = ifelse.(isnothing.(df.Nota_相差), 0, df.標書_相差) ### Need type check in DataLoad
+    # df.NOTA_NO = ifelse.(isnothing.(df.NOTA_NO), "missing", df.NOTA_NO) ### Need type check in DataLoad
 
     ## df1 Has nota
-    df1 = df[(df.SAP_Code .!= "missing") .& (df.標書_手動狀態 .== "missing") .& (df.Nota_手動狀態 .== "missing"), :]
 
-    df1 = df1[df1.Nota_SAP狀態 .== "尚欠", :]
-    otqty = combine(groupby(df1, [:物品編號]) , :Nota_相差 => sum => :Nota_Qty, :標書_相差 => sum => :Tender_Qty)
+    df1 = df[(df.SAP_Code .!= "missing") .& (df.手動狀態 .== "missing") .& (df.NOTA_手動狀態 .== "missing"), :]
+
+    df1 = df1[df1.NOTA_狀態 .== "尚欠", :]
+    otqty = combine(groupby(df1, [:物品編號]) , :NOTA_相差 => sum => :Nota_Qty, :相差 => sum => :Tender_Qty)
 
     ### No Nota
     df2 = df[df.NOTA_NO .=="missing", :]
 
-    df2 = combine(groupby(df2, [:物品編號, :標書編號]), :標書_要求供貨 => sum => :標書_要求供貨)
-    df2 = transform(df2, [:標書編號, :標書_要求供貨] => ByRow((a, b) -> string(a, " (", b, ")")) => :Open_Tender_Info)
+    df2 = combine(groupby(df2, [:物品編號, :標書編號]), :要求供貨 => sum => :要求供貨)
+    df2 = transform(df2, [:標書編號, :要求供貨] => ByRow((a, b) -> string(a, " (", b, ")")) => :Open_Tender_Info)
 
     noNotasQty = combine(groupby(df2, [:物品編號]) , :Open_Tender_Info => (x-> join(x,";")) => :Open_Tender_Info)
 
-    unique(otqty, :物品編號)
-    unique(noNotasQty, :物品編號)
+    # unique(otqty, :物品編號)
+    # unique(noNotasQty, :物品編號)
 
 
     df = leftjoin(mapping, otqty, on= :物品編號)
@@ -89,60 +88,6 @@ function addColIndice(data)
 end
 
 getProducts(data) = [Product(row...) for row in eachrow(data)]
-
-# function getTendersDf()
-#     tenders = load_object(joinpath(APP_PATH, "data", "all_tenders.jld2"))
-#     tenders = tenders[tenders.標書_SAP狀態 .=="尚欠", [:物品編號, :相差]]
-#     # tenders[isnothing.(tenders.相差) |> sum 
-#     return combine(groupby(tenders, :物品編號), :相差 => sum => :Outstanding_Qty)
-# end
-
-# function getDf()
-#     df = leftjoin(getChcsjPubpMapping(), getTendersDf(), on =:物品編號)
-#     df.Outstanding_Qty = coalesce.(df.Outstanding_Qty, 0)
-#     sort!(df, [:Supplier, :用途, :Product_Description], rev = false)
-#     return df
-# end
-
-# function filterData(searchText, selectedSuppliers, selectedCases)
-#     df = getDf()
-    
-#     text = replace(lowercase(searchText), " "=>"")
-#     df.joinedCol = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
-#     df = df[contains.(df.joinedCol, text), Not(:joinedCol)]
-    
-#     df = addColIndice(df)
-#     df = filter(:Supplier => in(selectedSuppliers), df)
-#     df = filter(:用途 => in(selectedCases), df)
-#     return df
-# end
-
-# function filterByText(searchText, selectedSuppliers, selectedCases)
-#     df = getDf()
-    
-#     df.joinedCol = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
-#     df = df[contains.(df.joinedCol, searchText), Not(:joinedCol)]
-    
-#     df = addColIndice(df)
-
-#     df = filter(:Supplier => in(selectedSuppliers), df)
-#     df = filter(:用途 => in(selectedCases), df)
-#     return df
-# end
-
-
-# function filterByCases(searchText, selectedSuppliers, selectedCases)
-#     df = getDf()
-#     df = filter(:用途 => in(selectedCases), df)
-
-#     df.joinedCol = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
-#     df = df[contains.(df.joinedCol, searchText), Not(:joinedCol)]
-    
-#     df = addColIndice(df)
-    
-#     df = filter(:Supplier => in(selectedSuppliers), df)
-#     return df
-# end
 
 idf = getdf()
 
