@@ -31,8 +31,7 @@ function getChcsjPubpMapping()
     mapping.CHCSJ_Product_Description .= ifelse.(mapping.CHCSJ_Product_Description .== "missing", mapping.Product_Description, mapping.CHCSJ_Product_Description)
     
     mapping = flatten(transform(mapping, :CHCSJ_物品編號 => ByRow(x -> string.(split(x, "/"))) => :CHCSJ_物品編號), :CHCSJ_物品編號)
-    unique!(mapping, :CHCSJ_物品編號)
-    
+    unique!(mapping, [:Supplier, :用途, :CHCSJ_物品編號])
     mapping = DataFrames.select(mapping, [:Supplier, :用途, :CHCSJ_物品編號, :CHCSJ_Product_Description])
     rename!(x-> replace(x, "CHCSJ_"=> ""), mapping)
     return mapping
