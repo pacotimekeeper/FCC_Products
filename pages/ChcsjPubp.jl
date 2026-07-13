@@ -19,6 +19,7 @@ mutable struct Product
     col2_index::Int
 end
 
+APP_PATH = pwd()
 function getChcsjPubpMapping()
     mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
     mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)
@@ -37,22 +38,11 @@ function getChcsjPubpMapping()
     return mapping
 end
 
-# APP_PATH = pwd()
+
 function getdf()
     mapping = getChcsjPubpMapping()
     df = load_object("data/all_tenders_notas.jld2")
-
     df = df[df.Customer .== "CHCSJ", :]
-    # for col in [:Nota_SAP狀態, :Nota_手動狀態]
-    #     df[!, col] .= coalesce.(df[!, col], "missing")
-    # end
-
-    # df.標書_要求供貨 = ifelse.(isnothing.(df.標書_要求供貨), 0, df.標書_要求供貨) ### Need type check in DataLoad
-    # df.標書_相差 = ifelse.(isnothing.(df.標書_相差), 0, df.標書_相差) ### Need type check in DataLoad
-    # df.Nota_相差 = ifelse.(isnothing.(df.Nota_相差), 0, df.標書_相差) ### Need type check in DataLoad
-    # df.NOTA_NO = ifelse.(isnothing.(df.NOTA_NO), "missing", df.NOTA_NO) ### Need type check in DataLoad
-
-    ## df1 Has nota
 
     df1 = df[(df.SAP_Code .!= "missing") .& (df.手動狀態 .== "missing") .& (df.NOTA_手動狀態 .== "missing"), :]
 
@@ -66,10 +56,6 @@ function getdf()
     df2 = transform(df2, [:標書編號, :要求供貨] => ByRow((a, b) -> string(a, " (", b, ")")) => :Open_Tender_Info)
 
     noNotasQty = combine(groupby(df2, [:物品編號]) , :Open_Tender_Info => (x-> join(x,";")) => :Open_Tender_Info)
-
-    # unique(otqty, :物品編號)
-    # unique(noNotasQty, :物品編號)
-
 
     df = leftjoin(mapping, otqty, on= :物品編號)
     df = leftjoin(df, noNotasQty,  on= :物品編號)
