@@ -141,12 +141,12 @@ th {
   background-color: #04AA6D;
   color: white;
 }
-
+/* 
 td {
   position: relative; /* Establishes a positioning context for the tooltip */
   white-space: nowrap; /* Prevents cell content from wrapping awkwardly */
   /* background-color: orange; */
-}
+} */
 
 .tooltip{
   position: relative;
