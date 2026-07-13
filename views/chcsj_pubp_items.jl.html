@@ -79,11 +79,11 @@
                     {{product.otNotaQty}}
                 </td>
 
-                <td v-if="product.openTenderInfo != 'missing'" class="htf has-info" :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey' }">
+                <td v-if="product.openTenderInfo != 'missing'" class="tooltip":style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey' }">
                     {{product.otTenderQty}}
-                    <div class="hidden-info">{{product.openTenderInfo}}</div>
+                    <span class="tooltiptext">{{product.openTenderInfo}}</span>
                 </td>
-                <td v-else :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey' }">
+                <td v-else :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey'}">
                     {{product.otTenderQty}}
                 </td>
                 <!-- <td v-else class="htf " :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey' }">

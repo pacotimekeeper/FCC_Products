@@ -142,32 +142,45 @@ th {
   color: white;
 }
 
-.has-info{
-  background-color: orange;
+td {
+  position: relative; /* Establishes a positioning context for the tooltip */
+  white-space: nowrap; /* Prevents cell content from wrapping awkwardly */
+  /* background-color: orange; */
+}
+
+.tooltip{
   position: relative;
+  display: inline-block;
+  background-color: orange;
+  border-bottom: 1px dotted black;
+  cursor: pointer;
 }
 
-.hidden-info {
-    display: none;
-    position: absolute;
-    background: #333; /* Darker background for better contrast */
-    color: white;
-    padding: 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    width: 200px;
-    z-index: 100;
+ .tooltiptext {
+  visibility: hidden;
+  width: 130px;
+  background-color: black;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 100;
+  right: 65%;
+
+  margin-top: 35px;
+  margin-right: -35px;
 }
 
-.htf:hover .hidden-info {
-    display: block;
-}
-
-.htf {
-    position: relative;
-    cursor: pointer;
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
 
 ._genie, container{
       display: none;
+}
+
+.bk {
+  background-color: grey;
 }
