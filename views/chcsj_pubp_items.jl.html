@@ -67,7 +67,6 @@
                 <td v-if="product.col2_index == 1">
                     {{product.usecase}}
                 </td>
-                </td>
                 <td v-else></td>
                 <td>
                     {{product.code}}
@@ -86,15 +85,6 @@
                 <td v-else :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey'}">
                     {{product.otTenderQty}}
                 </td>
-                <!-- <td v-else class="htf " :style="{ color: product.otNotaQty < 5 ? 'blue' : 'grey' }">
-                    {{product.otTenderQty}}
-                </td> -->
-
-                <!-- <td class="htf" style="color: product.openTenderInfo != 'missing' ? 'green' : (product.otNotaQty < 5 ? 'blue' : 'grey'))">
-                    {{product.otTenderQty}}
-                    <div class="hidden-info">{{product.openTenderInfo}}</div>
-                </td> -->
-
             </tr>
         </template>
     </table>
