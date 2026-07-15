@@ -1,6 +1,13 @@
 
-div.tablecontainer {
+/* div.tablecontainer {
   overflow-x: auto;
+} */
+
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .container-data-filter {
@@ -129,10 +136,12 @@ table {
   width: 100%;
 }
 
+
 td, th {
   border: 1px solid #ddd;
   padding: 8px;
 }
+
 
 tr:nth-child(even){background-color: #f2f2f2;}
 
