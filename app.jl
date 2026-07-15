@@ -33,6 +33,8 @@ route("/jsonpayload/:fileName", method = POST) do
 end
 
 include("pages/ChcsjPubp.jl")
+include("pages/ChcsjTendersNotas.jl")
+
 # include("pages/Dummy.jl")
 end
 

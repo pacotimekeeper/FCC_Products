@@ -1,0 +1,188 @@
+
+div.tablecontainer {
+  overflow-x: auto;
+}
+
+.container-data-filter {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
+  /* justify-content: center; */
+  /* background-color: DodgerBlue; */
+}
+
+.container-data-filterby {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  /* border-style: solid;
+  border-radius: 25px; */
+  margin: 5px;
+  width: 30%;
+  /* background-color: DodgerBlue; */
+}
+
+.search-container {
+  position: relative; /* Context for absolute positioning */
+  display: inline-block;
+  width: 100%
+  /* width: 300px; */
+}
+
+.search-container input {
+  width: 100px;
+  box-sizing: border-box;
+  padding: 10px 35px 10px 15px; /* Leave right padding for button space */
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%); /* Centered vertically */
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  display: none; /* Initially hidden */
+}
+
+/* .container-data-filter div {
+  background-color: #f1f1f1;
+  margin: 10px;
+  padding: 20px;
+  font-size: 24px;
+} */
+
+/* Container setup */
+.info-wrapper {
+  position: relative;
+  display: inline-block;
+  /* margin: 50px; */
+}
+
+/* Style the button */
+.trigger-btn {
+  /* padding: 10px 20px; */
+  cursor: pointer;
+  /* background-color: #4f46e5; */
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+/* The hidden Info Box */
+.info-box {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+  padding: 15px;
+  background-color: #333;
+  color: white;
+  border-radius: 8px;
+  width: 200px;
+  text-align: center;
+  
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+}
+
+/* The Icon styling */
+.icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* THE HOVER TRIGGER */
+.info-wrapper:hover .info-box {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Small arrow at the bottom of tooltip */
+.info-box::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+tr:hover {background-color: #ddd;}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+
+.has-info {
+  position: relative;
+  background-color: orange;
+  white-space: nowrap;
+}
+
+.tooltip{
+  position: relative;
+  /* border-bottom: 1px dotted black; */
+  cursor: pointer;
+}
+
+ .tooltiptext {
+  visibility: hidden;
+  width: 130px;
+  background-color: black;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 100;
+  right: 65%;
+
+  margin-top: 35px;
+  margin-right: -35px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+._genie, container{
+      display: none;
+}
+
+.bk {
+  background-color: grey;
+}

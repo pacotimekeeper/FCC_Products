@@ -1,0 +1,73 @@
+
+<h1>Notas</h1>
+
+<div class="input-group-container">
+    <!-- Label Group -->
+    <div class="label-block">
+        <b>Search by (用途/ 物品編號/ Description)</b>
+    </div>
+
+    <!-- Input Group -->
+    <div class="input-group">
+        <q-input v-model="searchtext" :rules="[required]" placeholder="Enter search term..."></q-input>
+        <!-- <q-btn 
+            icon="delete" 
+            color="primary" 
+            @click="btnClearSearch = true"
+            class="clear-btn"
+            style="min-width: 80px;">
+            Clear
+        </q-btn> -->
+    </div>
+</div>
+
+<div>
+        <b>Tender Status</b>
+        <q-select
+          filled
+          :options="statuses"
+          v-model="selectedstatuses"
+          multiple
+        />
+    </div>
+
+<div class="tablecontainer">
+    <table>
+        <tr>
+            <template v-for="thead in theads">
+                <th>{{thead}}</th>
+            </template>
+        </tr>
+        
+        <template v-for="nota in notas" :key="index">
+            <tr>
+                <td>
+                    {{nota.customer}}
+                </td>
+                <td>{{nota.custcode}}</td>
+                <td>{{nota.tenderno}}</td>
+                <td>{{nota.sapcode}}</td>
+                <td>{{nota.model}}</td>
+                <td>{{nota.ingredient}}</td>
+                <td>{{nota.productdesc}}</td>
+                <td>{{nota.unitprice}}</td>
+                <td>{{nota.reqqty}}</td>
+                <td>{{nota.supplied}}</td>
+                <td>{{nota.diff}}</td>
+                <td>{{nota.status}}</td>
+                <td>{{nota.mstatus}}</td>
+                <td>{{nota.notano}}</td>
+                <td>{{nota.notadate}}</td>
+                <td>{{nota.notareqqty}}</td>
+                <td>{{nota.notasupplied}}</td>
+                <td>{{nota.notadiff}}</td>
+                <td>{{nota.notastatus}}</td>
+                <td>{{nota.notamstatus}}</td>
+                <td>{{nota.stockqty}}</td>
+                <td>{{nota.stockinfo}}</td>
+                <td>{{nota.poqty}}</td>
+                <td>{{nota.poinfo}}</td>
+            </tr>
+        </template>
+    </table>
+</div>
