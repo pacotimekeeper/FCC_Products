@@ -1,54 +1,152 @@
 
-<h1>Notas</h1>
+<h1>Tenders Notas</h1>
 
-<div class="input-group-container">
-    <!-- Label Group -->
-    <div class="label-block">
-        <b>Search by (用途/ 物品編號/ Description)</b>
+<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+
+<div class="outer-container">
+    <div class="search-area">
+        <q-input 
+            v-model="searchtext"
+            placeholder="Search by (SAP Code/ 物品編號/ Product Description)"
+            style= "width:70%;">
+        </q-input>    
+        <q-btn 
+                icon="delete" 
+                color="primary" 
+                @click="btnClearSearch = true"
+                class="clear-btn"
+                padding="5px" 
+                style="width: 15%;" >
+                Clear
+        </q-btn>
+        <q-btn 
+                icon="refresh"
+                color="primary" 
+                @click="btnClearSearch = true"
+                class="clear-btn"
+                padding="5px"
+                style="width: 15%;" >
+                Refresh DAta
+        </q-btn>
     </div>
 
-    <!-- Input Group -->
-    <div class="input-group">
-        <q-input v-model="searchtext" :rules="[required]" placeholder="Enter search term..."></q-input>
-        <!-- <q-btn 
-            icon="delete" 
-            color="primary" 
-            @click="btnClearSearch = true"
-            class="clear-btn"
-            style="min-width: 80px;">
-            Clear
-        </q-btn> -->
+    <!-- Filters -->
+    <div class="inner-container">
+        <div class="container-filter-data">
+            <b>Filter Data</b>
+            <div class="container-filter-data-row">
+                <q-select
+                    filled
+                    label="Suppliers"
+                    :options="suppliers"
+                    v-model="selectedsuppliers"
+                    multiple
+                    style="width: 45%;"
+                />
+                <q-select
+                    filled
+                    label="Customers"
+                    :options="customers"
+                    v-model="selectedcustomers"
+                    multiple
+                    style="width: 45%;"
+                />
+            </div>
+            <div class="container-filter-data-row">
+                <q-select
+                    filled
+                    label="標書狀態"
+                    :options="statuses"
+                    v-model="selectedstatuses"
+                    multiple
+                    style="width: 45%;"
+                />
+                <q-select
+                    filled
+                    label="標書手動狀態"
+                    :options="manstatuses"
+                    v-model="selectedManStatuses"
+                    multiple
+                    style="width: 45%;"
+                />
+            </div>
+            <div class="container-filter-data-row">
+                <q-select
+                    filled
+                    label="NOTA狀態"
+                    :options="notastatuses"
+                    v-model="selectedNotaStatuses"
+                    multiple
+                    style="width: 45%;"
+                />
+                <q-select
+                    filled
+                    label="NOTA手動狀態"
+                    :options="notaManStatuses"
+                    v-model="selectedNotaManStatuses"
+                    multiple
+                    style="width: 45%;"
+                />
+
+            </div>
+        </div>
+        <div class="container-show-data">
+            <b>Show more data</b>
+            
+            <q-toggle v-model="notaDateIsShown" label="Nota Date" />
+            
+            <q-toggle v-model="stockInfoIsShown" label="Stock Info" />
+            
+            <q-toggle v-model="poInfoIsShown" label="PO Info" />
+
+            <q-toggle v-model="ingredientIsShown" label="成份/物品名稱" />
+
+
+        </div>
     </div>
 </div>
 
-<div>
-        <b>Tender Status</b>
-        <q-select
-          filled
-          :options="statuses"
-          v-model="selectedstatuses"
-          multiple
-        />
-    </div>
 
-<div class="tablecontainer">
+<div>
     <table>
         <tr>
-            <template v-for="thead in theads">
-                <th>{{thead}}</th>
-            </template>
+
+            <th class="tender">Supplier</th> 
+            <th class="tender">Customer</th> 
+            <th class="tender">物品編號</th>
+            <th class="tender">標書編號</th>
+            <th class="tender">SAP_Code</th>
+            <th class="tender">型號</th>
+            <th class="tender" v-show="ingredientIsShown">成份/物品名稱</th>
+            <th class="tender">Product_Description</th>
+            <th class="tender">單價</th>
+            <th class="tender">要求供貨</th>
+            <th class="tender">已供</th>
+            <th class="tender">相差</th>
+            <th class="tender">狀態</th>
+            <th class="tender">手動狀態</th>
+            <th class="nota">NOTA_NO</th>
+            <th class="nota" v-show="notaDateIsShown">NOTA_日期</th>
+            <th class="nota">NOTA_報購量數</th>
+            <th class="nota">NOTA_已供</th>
+            <th class="nota">NOTA_相差</th>
+            <th class="nota">NOTA_狀態</th>
+            <th class="nota">NOTA_手動狀態</th>
+            <th class="fccdata">Stock_Qty</th>
+            <th class="fccdata" v-show="stockInfoIsShown">Stock Info</th>
+            <th class="fccdata">PO_Qty</th>
+            <th class="fccdata" v-show="poInfoIsShown">PO Info</th>
         </tr>
         
         <template v-for="nota in notas" :key="index">
             <tr>
-                <td>
-                    {{nota.customer}}
-                </td>
+                <td>{{nota.supplier}}</td>
+                <td>{{nota.customer}}</td>
                 <td>{{nota.custcode}}</td>
                 <td>{{nota.tenderno}}</td>
                 <td>{{nota.sapcode}}</td>
                 <td>{{nota.model}}</td>
-                <td>{{nota.ingredient}}</td>
+                <td v-show="ingredientIsShown">{{nota.ingredient}}</td>
                 <td>{{nota.productdesc}}</td>
                 <td>{{nota.unitprice}}</td>
                 <td>{{nota.reqqty}}</td>
@@ -57,16 +155,16 @@
                 <td>{{nota.status}}</td>
                 <td>{{nota.mstatus}}</td>
                 <td>{{nota.notano}}</td>
-                <td>{{nota.notadate}}</td>
+                <td v-show="notaDateIsShown">{{nota.notadate}}</td>
                 <td>{{nota.notareqqty}}</td>
                 <td>{{nota.notasupplied}}</td>
                 <td>{{nota.notadiff}}</td>
                 <td>{{nota.notastatus}}</td>
                 <td>{{nota.notamstatus}}</td>
                 <td>{{nota.stockqty}}</td>
-                <td>{{nota.stockinfo}}</td>
+                <td v-show="stockInfoIsShown">{{nota.stockinfo}}</td>
                 <td>{{nota.poqty}}</td>
-                <td>{{nota.poinfo}}</td>
+                <td v-show="poInfoIsShown">{{nota.poinfo}}</td>
             </tr>
         </template>
     </table>

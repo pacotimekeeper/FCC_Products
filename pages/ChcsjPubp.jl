@@ -19,7 +19,7 @@ mutable struct Product
     col2_index::Int
 end
 
-APP_PATH = pwd()
+# APP_PATH = pwd()
 function getChcsjPubpMapping()
     mapping = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
     mapping = filter(["SAP_Code" , "CHCSJ_PUBP(Y/N)"] => ((x, y) -> x!="missing" && y=="Y"), mapping)

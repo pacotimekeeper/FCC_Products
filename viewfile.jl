@@ -7,13 +7,11 @@ using JLD2
 using OrderedCollections
 @genietools
 
-
-oldnames = ["Customer", "物品編號", "標書編號", "SAP_Code", "型號", "成份/物品名稱", "Product_Description", "單價", "要求供貨", "已供", "相差", "狀態", "手動狀態", "NOTA_NO",	"NOTA_日期", "NOTA_報購量數", "NOTA_已供",	"NOTA_相差", "NOTA_狀態", "NOTA_手動狀態", "Stock_Qty", "Stock_Info", "PO_Qty",	"PO_Info"]
+oldnames = ["Customer", "物品編號", "標書編號", "SAP_Code", "型號", "成份/物品名稱", "Product_Description", "單價", "要求供貨", "已供", "相差", "狀態", "手動狀態", "NOTA_NO", "NOTA_日期", "NOTA_報購量數", "NOTA_已供", "NOTA_相差", "NOTA_狀態", "NOTA_手動狀態", "Stock_Qty", "Stock_Info", "PO_Qty", "PO_Info"]
 newnames = ["customer", "custcode", "tenderno", "sapcode", "model", "ingredient", "productdesc", "unitprice", "reqqty", "supplied", "diff", "status", "mstatus", "notano", "notadate", "notareqqty", "notasupplied", "notadiff", "notastatus", "notamstatus", "stockqty", "stockinfo", "poqty", "poinfo"]
 newcols = Dict(zip(oldnames, newnames))
 
 mutable struct Nota
-    supplier::String
     customer::String
     custcode::String
     tenderno::String
@@ -38,14 +36,13 @@ mutable struct Nota
     stockinfo::String
     poqty::Int64
     poinfo::String
+    show_columns::Dict{Symbol, Bool}
 end
 
 # 1. Global Variable to hold the "Master" DataFrame
 gdf = DataFrame()
 
 APP_PATH = pwd()
-suppliermap = Dict("bdb" => "BD", "cwl" => "Medtronic (Covidien)", "esm" => "Medtronic", "esn" => "Smith & Nepthew", "cbt" => "Baxter")
-
 function refreshDataCache()
     mappings = load_object(joinpath(APP_PATH, "data", "mappings.jld2"))
     chcsjPubpItems = filter("CHCSJ_PUBP(Y/N)" => ==("Y"), mappings).SAP_Code
@@ -80,33 +77,24 @@ function refreshDataCache()
     end
     
     df.手動狀態 .= strip.(df.手動狀態) ## clean on transform
-    df.Supplier = map(x -> get(suppliermap, lowercase(x[1:3]), "Others"), df.SAP_Code)
 
-    select!(df, ["Supplier", "Customer", "物品編號", "標書編號", "SAP_Code", "型號", "成份/物品名稱", "Product_Description", "單價", "要求供貨", "已供", "相差", "狀態", "手動狀態", "NOTA_NO",	"NOTA_日期", "NOTA_報購量數", "NOTA_已供",	"NOTA_相差", "NOTA_狀態", "NOTA_手動狀態", "Stock_Qty", "Stock_Info", "PO_Qty",	"PO_Info"])
+    select!(df, ["Customer", "物品編號", "標書編號", "SAP_Code", "型號", "成份/物品名稱", "Product_Description", "單價", "要求供貨", "已供", "相差", "狀態", "手動狀態", "NOTA_NO", "NOTA_日期", "NOTA_報購量數", "NOTA_已供", "NOTA_相差", "NOTA_狀態", "NOTA_手動狀態", "Stock_Qty", "Stock_Info", "PO_Qty", "PO_Info"])
     # rename!(df, newcols)
     global gdf = df
 end
 
-getnotas(data) = [Nota(row...) for row in eachrow(data)]
+getnotas(data) = [Nota(row..., show_columns=Dict{Symbol, Bool}()) for row in eachrow(data)]
 
 refreshDataCache()
 
 @app begin
     @in searchtext = ""
-    @in btnClearSearch = false
-
-    ## show columns>
     @in notaDateIsShown = false
     @in stockInfoIsShown = false
     @in poInfoIsShown = false
-    @in ingredientIsShown = false
 
     @in btnrefresh = false
 
-    ## multi select dropdowns
-    @in suppliers = unique(gdf.Supplier) |> sort
-    @in selectedsuppliers = String[]
-    
     @in customers = unique(gdf.Customer) |> sort
     @in selectedcustomers = String[]
 
@@ -122,8 +110,7 @@ refreshDataCache()
     @in notaManStatuses = unique(gdf.NOTA_手動狀態) |> sort
     @in selectedNotaManStatuses = String[]
 
-    for (k, v) in [ (suppliers, selectedsuppliers),
-                    (customers, selectedcustomers),
+    for (k, v) in [ (customers, selectedcustomers),
                     (statuses, selectedstatuses), 
                     (manstatuses, selectedManStatuses),
                     (notastatuses, selectedNotaStatuses),
@@ -148,18 +135,7 @@ refreshDataCache()
         notas = gdf |> getnotas
     end
 
-    @onbutton btnClearSearch begin
-        println("am pressed")
-        searchtext = ""
-        selectedcustomers = String[]
-        selectedstatuses = String[] 
-        selectedManStatuses = String[] 
-        selectedNotaStatuses = String[]
-        selectedNotaManStatuses = String[]
-        println("am at the end")
-    end
-
-    @onchange searchtext, selectedsuppliers, selectedcustomers, selectedstatuses, selectedManStatuses, selectedNotaStatuses, selectedNotaManStatuses begin
+    @onchange searchtext, selectedcustomers, selectedstatuses, selectedManStatuses, selectedNotaStatuses, selectedNotaManStatuses begin
         # df = getdf()
     
         # 1. Normalize search term once
@@ -173,8 +149,6 @@ refreshDataCache()
         joinedtext = replace.(lowercase.(string.(gdf.SAP_Code, gdf.物品編號, gdf.Product_Description)), Ref("-"=> ""))
         searchmask = map(x -> isempty(searchterm) || contains(x, searchterm), joinedtext)
         
-        
-        suppliermask = map(x -> isempty(selectedsuppliers) || x in selectedsuppliers, gdf.Supplier)        
         customermask = map(x -> isempty(selectedcustomers) || x in selectedcustomers, gdf.Customer)        
 
         # Supplier Mask: Check if the row's supplier exists in our selection
@@ -189,17 +163,39 @@ refreshDataCache()
 
         # 3. Combine Masks (True only if ALL conditions are met)
         # We use standard Julia logical AND for boolean arrays
-        # final_mask = search_mask .& supplier_mask .& case_mask
-        finalmask = searchmask .& suppliermask .& customermask .& statusmask .& mstatusmask .& notaStatusMask .& notaManStatusMask
-        # finalmask = searchmask
+        finalmask = searchmask .& customermask .& statusmask .& mstatusmask .& notaStatusMask .& notaManStatusMask
         
         # 4. Filter and update products
         fdf = gdf[finalmask, :]
 
         if isempty(fdf)
-            notas = Nota[]
+            notas = getnotas(Nothing)
         else
-            notas = fdf |> getnotas
+            notas = getnotas(fdf)
+        end
+
+        for i in eachindex(notas)
+            if notas[i].notadate == ""
+                notas[i].show_columns[:notadate] = false
+            else
+                notas[i].show_columns[:notadate] = notaDateIsShown
+            end
+
+            if notas[i].stockqty == 0 && notas[i].stockinfo == ""
+                notas[i].show_columns[:stockqty] = false
+                notas[i].show_columns[:stockinfo] = false
+            else
+                notas[i].show_columns[:stockqty] = stockInfoIsShown
+                notas[i].show_columns[:stockinfo] = stockInfoIsShown
+            end
+
+            if notas[i].poqty == 0 && notas[i].poinfo == ""
+                notas[i].show_columns[:poqty] = false
+                notas[i].show_columns[:poinfo] = false
+            else
+                notas[i].show_columns[:poqty] = poInfoIsShown
+                notas[i].show_columns[:poinfo] = poInfoIsShown
+            end
         end
     end
 end

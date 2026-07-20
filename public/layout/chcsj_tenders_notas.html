@@ -16,16 +16,12 @@
     </style>
   </head>
   <body>
-    <div class='container'>
-      <div class='row'>
-        <div class='col-12'>
-          <% page(model, partial = true, v__cloak = true, [@yield], @iif(:isready)) %>
-        </div>
-      </div>
-    </div>
-    <% if isfile(joinpath(Genie.config.server_document_root, "js", "genieapp.js")) %>
-    <script src='/js/genieapp.js'></script>
+    <% page(model, partial = true, v__cloak = true, [@yield], @iif(:isready)) %>
+    
+    <% if isfile(joinpath(Genie.config.server_document_root, "js", "chcsj_tenders_notas.js")) %>
+      <script src='/js/chcsj_tenders_notas.js'></script>
     <% else %>
+      <script>console.error('JS file not found: /js/chcsj_tenders_notas.js');</script>
     <% end %>
   </body>
 </html>

@@ -1,153 +1,92 @@
 
-/* div.tablecontainer {
-  overflow-x: auto;
-} */
+/* public/css/chcsj_tenders_notas.css */
 
-
-th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
+#myBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: red;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
 }
 
-.container-data-filter {
+#myBtn:hover {
+  background-color: #555;
+}
+
+.outer-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px;
+  margin: 5px;
+  border-style: solid;
+  border-radius: 25px;
+}
+
+.search-area {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 5px;
+  border-radius: 4px
+}
+
+.inner-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.container-filter-data {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+}
+
+.container-filter-data-row{
   display: flex;
   flex-direction: row;
   width: 100%;
-  flex-wrap: wrap;
-  /* justify-content: center; */
-  /* background-color: DodgerBlue; */
+  justify-content: space-between;
 }
 
-.container-data-filterby {
+.container-show-data {
   display: flex;
   flex-direction: column;
-  padding: 5px;
-  /* border-style: solid;
-  border-radius: 25px; */
-  margin: 5px;
-  width: 30%;
-  /* background-color: DodgerBlue; */
-}
-
-.search-container {
-  position: relative; /* Context for absolute positioning */
-  display: inline-block;
-  width: 100%
-  /* width: 300px; */
-}
-
-.search-container input {
-  width: 100px;
-  box-sizing: border-box;
-  padding: 10px 35px 10px 15px; /* Leave right padding for button space */
-  font-size: 16px;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  outline: none;
+  width: 25%;
 }
 
 .clear-btn {
   position: absolute;
   right: 10px;
-  top: 50%;
-  transform: translateY(-50%); /* Centered vertically */
+  top: 25%;
+  transform: translateY(-25%); /* Centered vertically */
   background: transparent;
   border: none;
   font-size: 20px;
   color: #999;
   cursor: pointer;
   display: none; /* Initially hidden */
+  /* gap: 10px; */
 }
 
-/* .container-data-filter div {
-  background-color: #f1f1f1;
-  margin: 10px;
-  padding: 20px;
-  font-size: 24px;
-} */
-
-/* Container setup */
-.info-wrapper {
-  position: relative;
-  display: inline-block;
-  /* margin: 50px; */
-}
-
-/* Style the button */
-.trigger-btn {
-  /* padding: 10px 20px; */
-  cursor: pointer;
-  /* background-color: #4f46e5; */
-  color: white;
-  border: none;
-  border-radius: 8px;
-}
-
-/* The hidden Info Box */
-.info-box {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 10px;
-  padding: 15px;
-  background-color: #333;
-  color: white;
-  border-radius: 8px;
-  width: 200px;
-  text-align: center;
-  
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-}
-
-/* The Icon styling */
-.icon {
-  font-size: 1.5rem;
-  display: block;
-  margin-bottom: 5px;
-}
-
-/* THE HOVER TRIGGER */
-.info-wrapper:hover .info-box {
-  visibility: visible;
-  opacity: 1;
-}
-
-/* Small arrow at the bottom of tooltip */
-.info-box::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #333 transparent transparent transparent;
-}
 
 table {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;
+  overflow-x: auto;
 }
 
-
-td, th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-
-tr:nth-child(even){background-color: #f2f2f2;}
-
-tr:hover {background-color: #ddd;}
-
-th {
+.tender{
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
@@ -155,43 +94,33 @@ th {
   color: white;
 }
 
-.has-info {
-  position: relative;
-  background-color: orange;
-  white-space: nowrap;
+.nota{
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #1434A4;
+  color: white;
 }
 
-.tooltip{
-  position: relative;
-  /* border-bottom: 1px dotted black; */
-  cursor: pointer;
+.fccdata{
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: red;
+  color: white;
 }
 
- .tooltiptext {
-  visibility: hidden;
-  width: 130px;
-  background-color: black;
-  color: #ffffff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  top: 100;
-  right: 65%;
-
-  margin-top: 35px;
-  margin-right: -35px;
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
+th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
+tr:nth-child(even){background-color: #f2f2f2;}
 
-._genie, container{
-      display: none;
-}
+tr:hover {background-color: #ddd;}
 
-.bk {
-  background-color: grey;
-}
