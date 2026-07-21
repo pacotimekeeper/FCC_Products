@@ -32,6 +32,13 @@ route("/jsonpayload/:fileName", method = POST) do
     end
 end
 
+
+
+route("/", method = GET) do
+    content = read("views/landing.html")
+    html(String(content))
+end
+
 include("pages/ChcsjPubp.jl")
 include("pages/ChcsjTendersNotas.jl")
 
