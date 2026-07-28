@@ -14,7 +14,6 @@
 <h3>CHCSJ PUBP Items</h3>
 
 <div class="container-data-filter">
-
     <div class="container-data-filterby" style="width: 35%">
         <div class="input-group-container">
             <!-- Label Group -->
@@ -24,15 +23,24 @@
 
             <!-- Input Group -->
             <div class="input-group">
-                <q-input v-model="searchText" :rules="[required]" placeholder="Enter search term..."></q-input>
+                <q-input v-model="searchtext" :rules="[required]" placeholder="Enter search term..."></q-input>
+                
+                <q-btn 
+                    icon="search"
+                    color="primary" 
+                    @click="btnsearch = true"
+                    :loading = "btnsearch"
+                    style="min-width: 50px;">
+                    Search
+                </q-btn>
+                
                 <q-btn 
                     icon="delete" 
-                    color="primary" 
                     @click="btnClearSearch = true"
-                    class="clear-btn"
-                    style="min-width: 80px;">
+                    style="min-width: 50px;">
                     Clear
                 </q-btn>
+
             </div>
         </div>
     </div>
@@ -42,7 +50,7 @@
         <q-select
           filled
           :options="suppliers"
-          v-model="selectedSuppliers"
+          v-model="selectedsuppliers"
           multiple
         />
     </div>
@@ -51,15 +59,14 @@
         <b>用途</b>
         <q-select
           filled
-          :options="caseOptions"
-          v-model="selectedCases"
+          :options="cases"
+          v-model="selectedcases"
           multiple
         />
     </div>
-    
-
 </div>
-<!-- <hr> -->
+
+<div v-show="products.length === 0">No Data Available</div>
 
 <div>
     <table>

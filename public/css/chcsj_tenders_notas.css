@@ -74,6 +74,7 @@ nav ul li a:hover {
   cursor: pointer;
   padding: 15px;
   border-radius: 4px;
+  opacity: 0.5;
 }
 
 #myBtn:hover {

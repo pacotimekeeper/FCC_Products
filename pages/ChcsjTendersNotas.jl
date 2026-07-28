@@ -43,7 +43,7 @@ end
 # 1. Global Variable to hold the "Master" DataFrame
 gdf = DataFrame()
 
-APP_PATH = pwd()
+# APP_PATH = pwd()
 suppliermap = Dict("bdb" => "BD", "cwl" => "Medtronic (Covidien)", "esm" => "Medtronic", "esn" => "Smith & Nepthew", "cbt" => "Baxter")
 
 function refreshDataCache()
@@ -93,12 +93,14 @@ refreshDataCache()
 
 @app begin
     @in searchtext = ""
+    @in btnsearch = false
     @in btnClearSearch = false
 
     ## show columns>
     @in notaDateIsShown = false
     @in stockInfoIsShown = false
     @in poInfoIsShown = false
+    @in productDescIsShown = false
     @in ingredientIsShown = false
 
     @in btnrefresh = false
@@ -136,30 +138,30 @@ refreshDataCache()
     end
 
     @out theads = names(gdf)
-    @out notas = gdf |> getnotas
+    # @out notas = gdf |> getnotas
+    @out notas = Nota[]
 
-    @onbutton btnrefresh begin
-        refreshDataCache()
-        notas = gdf |> getnotas
-    end
+    # @onbutton btnrefresh begin
+    #     refreshDataCache()
+    #     notas = gdf |> getnotas
+    # end
 
     @onchange isready begin
         refreshDataCache()
-        notas = gdf |> getnotas
     end
 
     @onbutton btnClearSearch begin
-        println("am pressed")
         searchtext = ""
+        selectedsuppliers = String[]
         selectedcustomers = String[]
         selectedstatuses = String[] 
         selectedManStatuses = String[] 
         selectedNotaStatuses = String[]
         selectedNotaManStatuses = String[]
-        println("am at the end")
     end
 
-    @onchange searchtext, selectedsuppliers, selectedcustomers, selectedstatuses, selectedManStatuses, selectedNotaStatuses, selectedNotaManStatuses begin
+    @onbutton btnsearch begin
+    # @onbutton searchtext, selectedsuppliers, selectedcustomers, selectedstatuses, selectedManStatuses, selectedNotaStatuses, selectedNotaManStatuses begin
         # df = getdf()
     
         # 1. Normalize search term once

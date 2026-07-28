@@ -6,7 +6,6 @@ using JLD2
 using OrderedCollections
 @genietools
 
-
 mutable struct Product
     supplier::String
     usecase::String
@@ -15,9 +14,11 @@ mutable struct Product
     otNotaQty::Int
     otTenderQty::Int
     openTenderInfo::String
-    col1_index::Int
-    col2_index::Int
+    col1_index::Union{Nothing, Int}
+    col2_index::Union{Nothing, Int}
 end
+
+gdf = DataFrame()
 
 # APP_PATH = pwd()
 function getChcsjPubpMapping()
@@ -38,8 +39,7 @@ function getChcsjPubpMapping()
     return mapping
 end
 
-
-function getdf()
+function refreshDataCache()
     mapping = getChcsjPubpMapping()
     df = load_object("data/all_tenders_notas.jld2")
     df = df[df.Customer .== "CHCSJ", :]
@@ -64,7 +64,7 @@ function getdf()
     end
     df[!, :Open_Tender_Info] .= coalesce.(df[!, :Open_Tender_Info], "missing")
     sort!(df, [:Supplier, :用途, :Product_Description], rev = false)
-    return df
+    global gdf = df
 end
 
 function addColIndice(data)
@@ -74,60 +74,75 @@ function addColIndice(data)
 end
 
 getProducts(data) = [Product(row...) for row in eachrow(data)]
-
-# idf = getdf()
+refreshDataCache()
+# gdf |> addColIndice |> getProducts
+# Product[]
 
 @app begin
-    @in searchText = ""
+    @in searchtext = ""
+    @in btnsearch = false
     @in btnClearSearch = false
 
-    @in suppliers = unique(getdf().Supplier) |> sort
-    @in selectedSuppliers = String[]
+    @in suppliers = unique(gdf.Supplier) |> sort
+    @in selectedsuppliers = String[]
 
-    @in caseOptions = unique(getdf().用途) |> sort
-    @in selectedCases = String[]
-    # @out useCases = filter(x-> x!="missing", unique(df.用途))
+    @in cases = unique(gdf.用途) |> sort
+    @in selectedcases = String[]
 
     @out theads = ["Supplier", "用途", "物品編號 -- Product Description", "Nota餘量", "標書餘量"]
-    @out products = getdf() |> addColIndice |> getProducts
+    # @out products = gdf |> addColIndice |> getProducts
+    @out products = Product[]
     
-    @onbutton btnClearSearch begin
-        searchText = ""
-        selectedSuppliers = String[]
-        selectedCases = String[]
+    for (k, v) in [ (suppliers, selectedsuppliers),
+                    (cases, selectedcases)]
+        if isempty(v)
+            @in v = ["Select"]
+        else
+            @in v = [first(v)]
+        end
     end
 
-    @onchange searchText, selectedCases, selectedSuppliers begin 
-        df = getdf()
-    
+    @onbutton btnsearch begin
         # 1. Normalize search term once
-        search_term = isempty(searchText) ? "" : lowercase(strip(searchText))
+        search_term = isempty(searchtext) ? "" : lowercase(strip(searchtext))
         
         # 2. Create the masks using vectorized operations
         # We use map-like comparisons to ensure compatibility with all types (Strings, Missing, etc.)
         
         # Search Mask: Check if join-text contains search_term
-        joined_text = lowercase.(string.(df.Product_Description, df.物品編號, df.用途))
+        joined_text = lowercase.(string.(gdf.Product_Description, gdf.物品編號, gdf.用途))
         search_mask = map(x -> isempty(search_term) || contains(x, search_term), joined_text)
         
         # Supplier Mask: Check if the row's supplier exists in our selection
-        supplier_mask = map(x -> isempty(selectedSuppliers) || x in selectedSuppliers, df.Supplier)
+        supplier_mask = map(x -> isempty(selectedsuppliers) || x in selectedsuppliers, gdf.Supplier)
         
         # Case/Tag Mask: Check if the row's usage exists in our selection
-        case_mask = map(x -> isempty(selectedCases) || x in selectedCases, df.用途)
+        case_mask = map(x -> isempty(selectedcases) || x in selectedcases, gdf.用途)
 
         # 3. Combine Masks (True only if ALL conditions are met)
         # We use standard Julia logical AND for boolean arrays
         final_mask = search_mask .& supplier_mask .& case_mask
         
         # 4. Filter and update products
-        filtered_df = df[final_mask, :]
+        filtered_df = gdf[final_mask, :]
 
         if isempty(filtered_df)
             products = Product[]
         else
             products = filtered_df |> addColIndice |> getProducts
         end
+    
+    end
+
+    @onchange isready begin
+        refreshDataCache()
+        # products = gdf |> addColIndice |> getProducts
+    end
+
+    @onbutton btnClearSearch begin
+        searchtext = ""
+        selectedsuppliers = String[]
+        selectedcases = String[]
     end
 end
 

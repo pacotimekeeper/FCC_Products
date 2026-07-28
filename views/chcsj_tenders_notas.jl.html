@@ -22,24 +22,24 @@
             v-model="searchtext"
             placeholder="Search by (SAP Code/ 物品編號/ Product Description)"
             style= "width:70%;">
-        </q-input>    
+        </q-input>
+        
         <q-btn 
-                icon="delete" 
-                color="primary" 
-                @click="btnClearSearch = true"
-                class="clear-btn"
-                padding="5px" 
-                style="width: 15%;" >
-                Clear
+            icon="search" 
+            color="primary"
+            @click="btnsearch = true"
+            :loading = "btnsearch"
+            padding="5px"
+            style="width: 15%;" >
+            Search
         </q-btn>
+
         <q-btn 
-                icon="refresh"
-                color="primary" 
-                @click="btnClearSearch = true"
-                class="clear-btn"
-                padding="5px"
-                style="width: 15%;" >
-                Refresh DAta
+            icon="delete" 
+            @click="btnClearSearch = true"
+            padding="5px" 
+            style="width: 15%;" >
+            Clear
         </q-btn>
     </div>
 
@@ -106,19 +106,20 @@
         <div class="container-show-data">
             <b>Show more data</b>
             
-            <q-toggle v-model="notaDateIsShown" label="Nota Date" />
+            <q-toggle v-model="notaDateIsShown" label="Nota日期" />
             
             <q-toggle v-model="stockInfoIsShown" label="Stock Info" />
             
             <q-toggle v-model="poInfoIsShown" label="PO Info" />
 
-            <q-toggle v-model="ingredientIsShown" label="成份/物品名稱" />
+            <q-toggle v-model="productDescIsShown" label="Product Description (Mapping)" />
 
 
         </div>
     </div>
 </div>
 
+<div v-show="notas.length === 0">No Data Available</div>
 
 <div>
     <table>
@@ -130,8 +131,8 @@
             <th class="tender">標書編號</th>
             <th class="tender">SAP_Code</th>
             <th class="tender">型號</th>
-            <th class="tender" v-show="ingredientIsShown">成份/物品名稱</th>
-            <th class="tender">Product_Description</th>
+            <th class="tender">成份/物品名稱</th>
+            <th class="tender" v-show="productDescIsShown">Product Description (Mapping)</th>
             <th class="tender">單價</th>
             <th class="tender">要求供貨</th>
             <th class="tender">已供</th>
@@ -159,8 +160,9 @@
                 <td>{{nota.tenderno}}</td>
                 <td>{{nota.sapcode}}</td>
                 <td>{{nota.model}}</td>
-                <td v-show="ingredientIsShown">{{nota.ingredient}}</td>
-                <td>{{nota.productdesc}}</td>
+                
+                <td>{{nota.ingredient}}</td>
+                <td v-show="productDescIsShown">{{nota.productdesc}}</td>
                 <td>{{nota.unitprice}}</td>
                 <td>{{nota.reqqty}}</td>
                 <td>{{nota.supplied}}</td>
@@ -174,9 +176,9 @@
                 <td>{{nota.notadiff}}</td>
                 <td>{{nota.notastatus}}</td>
                 <td>{{nota.notamstatus}}</td>
-                <td>{{nota.stockqty}}</td>
+                <td :style="{ backgroundColor: nota.stockqty === 0 ? '#D9534F' : '#5CB85C' , color: (nota.stockqty === 0 || nota.stockqty !== 0) ? 'white' : '#6B7280'}">{{nota.stockqty}}</td>
                 <td v-show="stockInfoIsShown">{{nota.stockinfo}}</td>
-                <td>{{nota.poqty}}</td>
+                <td :style="{ backgroundColor: nota.poqty === 0 ? '#D9534F' : '#5CB85C' , color: (nota.poqty === 0 || nota.poqty !== 0) ? 'white' : '#6B7280'}">{{nota.poqty}}</td>
                 <td v-show="poInfoIsShown">{{nota.poinfo}}</td>
             </tr>
         </template>
