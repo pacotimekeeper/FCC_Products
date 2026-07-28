@@ -148,6 +148,12 @@ refreshDataCache()
 
     @onchange isready begin
         refreshDataCache()
+        suppliers = unique(gdf.Supplier) |> sort
+        customers = unique(gdf.Customer) |> sort
+        statuses = unique(gdf.狀態) |> sort
+        manstatuses = unique(gdf.手動狀態) |> sort
+        notastatuses = unique(gdf.NOTA_狀態) |> sort
+        notaManStatuses = unique(gdf.NOTA_手動狀態) |> sort
     end
 
     @onbutton btnClearSearch begin
