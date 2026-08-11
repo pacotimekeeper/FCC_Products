@@ -105,16 +105,15 @@
         </div>
         <div class="container-show-data">
             <b>Show more data</b>
-            
+            <q-toggle v-model="unitPriceIsShown" label="單價" />
+            <q-toggle v-model="statusIsShown" label="標書狀態" />            
+            <q-toggle v-model="mstatusIsShown" label="標書手動狀態" />
+            <q-toggle v-model="notaStatusIsShown" label="Nota狀態" />            
+            <q-toggle v-model="notamStatusIsShown" label="Nota手動狀態" />
             <q-toggle v-model="notaDateIsShown" label="Nota日期" />
-            
             <q-toggle v-model="stockInfoIsShown" label="Stock Info" />
-            
             <q-toggle v-model="poInfoIsShown" label="PO Info" />
-
             <q-toggle v-model="productDescIsShown" label="Product Description (Mapping)" />
-
-
         </div>
     </div>
 </div>
@@ -123,8 +122,13 @@
 
 <div>
     <table>
-        <tr>
+<tr>
+    <th class="tender" :colspan="10 + productDescIsShown + unitPriceIsShown + statusIsShown + mstatusIsShown">Tender</th>
+    <th class="nota" :colspan="4 + notaDateIsShown + notaStatusIsShown + notamStatusIsShown">Nota</th>
+    <th class="fccdata" :colspan="2 + stockInfoIsShown + poInfoIsShown"> FCC Data</th>
+</tr>
 
+        <tr>
             <th class="tender">Supplier</th> 
             <th class="tender">Customer</th> 
             <th class="tender">物品編號</th>
@@ -133,19 +137,19 @@
             <th class="tender">型號</th>
             <th class="tender">成份/物品名稱</th>
             <th class="tender" v-show="productDescIsShown">Product Description (Mapping)</th>
-            <th class="tender">單價</th>
+            <th class="tender" v-show="unitPriceIsShown">單價</th>
             <th class="tender">要求供貨</th>
             <th class="tender">已供</th>
             <th class="tender">相差</th>
-            <th class="tender">狀態</th>
-            <th class="tender">手動狀態</th>
-            <th class="nota">NOTA_NO</th>
-            <th class="nota" v-show="notaDateIsShown">NOTA_日期</th>
-            <th class="nota">NOTA_報購量數</th>
-            <th class="nota">NOTA_已供</th>
-            <th class="nota">NOTA_相差</th>
-            <th class="nota">NOTA_狀態</th>
-            <th class="nota">NOTA_手動狀態</th>
+            <th class="tender" v-show="statusIsShown">狀態</th>
+            <th class="tender" v-show="mstatusIsShown">手動狀態</th>
+            <th class="nota">NOTA NO</th>
+            <th class="nota" v-show="notaDateIsShown">日期</th>
+            <th class="nota">報購量數</th>
+            <th class="nota">已供</th>
+            <th class="nota">相差</th>
+            <th class="nota" v-show="notaStatusIsShown">狀態</th>
+            <th class="nota" v-show="notamStatusIsShown">手動狀態</th>
             <th class="fccdata">Stock_Qty</th>
             <th class="fccdata" v-show="stockInfoIsShown">Stock Info</th>
             <th class="fccdata">PO_Qty</th>
@@ -163,19 +167,19 @@
                 
                 <td>{{nota.ingredient}}</td>
                 <td v-show="productDescIsShown">{{nota.productdesc}}</td>
-                <td>{{nota.unitprice}}</td>
+                <td v-show="unitPriceIsShown">{{nota.unitprice}}</td>
                 <td>{{nota.reqqty}}</td>
                 <td>{{nota.supplied}}</td>
                 <td>{{nota.diff}}</td>
-                <td>{{nota.status}}</td>
-                <td>{{nota.mstatus}}</td>
+                <td v-show="statusIsShown">{{nota.status}}</td>
+                <td v-show="mstatusIsShown">{{nota.mstatus}}</td>
                 <td>{{nota.notano}}</td>
                 <td v-show="notaDateIsShown">{{nota.notadate}}</td>
                 <td>{{nota.notareqqty}}</td>
                 <td>{{nota.notasupplied}}</td>
                 <td>{{nota.notadiff}}</td>
-                <td>{{nota.notastatus}}</td>
-                <td>{{nota.notamstatus}}</td>
+                <td v-show="notaStatusIsShown">{{nota.notastatus}}</td>
+                <td v-show="notamStatusIsShown">{{nota.notamstatus}}</td>
                 <td :style="{ backgroundColor: nota.stockqty === 0 ? '#D9534F' : '#5CB85C' , color: (nota.stockqty === 0 || nota.stockqty !== 0) ? 'white' : '#6B7280'}">{{nota.stockqty}}</td>
                 <td v-show="stockInfoIsShown">{{nota.stockinfo}}</td>
                 <td :style="{ backgroundColor: nota.poqty === 0 ? '#D9534F' : '#5CB85C' , color: (nota.poqty === 0 || nota.poqty !== 0) ? 'white' : '#6B7280'}">{{nota.poqty}}</td>

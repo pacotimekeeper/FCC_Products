@@ -97,6 +97,12 @@ refreshDataCache()
     @in btnClearSearch = false
 
     ## show columns>
+    @in unitPriceIsShown = false
+    @in statusIsShown = false
+    @in mstatusIsShown = false
+    @in notaStatusIsShown = false
+    @in notamStatusIsShown = false
+
     @in notaDateIsShown = false
     @in stockInfoIsShown = false
     @in poInfoIsShown = false
